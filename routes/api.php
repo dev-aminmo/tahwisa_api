@@ -3,7 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
-
+use App\Http\Controllers\PlaceController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -21,3 +21,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::post("/register",[UserController::class,"registration"]);
 Route::post("/login",[UserController::class,"login"]);
 Route::get("/login",[UserController::class,"login"]);
+Route::post("/addplace",[PlaceController::class,"addPlace"]);

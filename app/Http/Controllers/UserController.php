@@ -15,7 +15,7 @@ class UserController extends Controller
     {
         $validation = Validator::make($request->all(), [
             'username' => 'required',
-            'email' => 'required',
+            'email' => 'required|email',
             'password' => 'required',
         ]);
         if ($validation->fails()) {
@@ -25,9 +25,7 @@ class UserController extends Controller
         $allData['password'] = bcrypt($allData['password']);
         $newUser = User::create($allData);
         $tokenStr = $newUser->createToken('api-application')->accessToken;
-        $resArr["id"] = "raha shaba";
         $resArr["token"] = $tokenStr;
-        // $ressArr['token']=$user->createToken('')
         return response()->json($resArr, 200);
     }
 
