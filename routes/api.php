@@ -15,10 +15,14 @@ use App\Http\Controllers\PlaceController;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
+/*Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
+});*/
+Route::middleware('auth:api')->group(function (){
+    Route::get("/user",[UserController::class,"details"]);
+
 });
 Route::post("/register",[UserController::class,"registration"]);
 Route::post("/login",[UserController::class,"login"]);
-Route::get("/login",[UserController::class,"login"]);
+Route::get("/login",[UserController::class,"login"])->name('login');
 Route::post("/addplace",[PlaceController::class,"addPlace"]);

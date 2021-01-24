@@ -15,8 +15,8 @@ class UserController extends Controller
     {
         $validation = Validator::make($request->all(), [
             'username' => 'required',
-            'email' => 'required|email',
-            'password' => 'required',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|min:6',
         ]);
         if ($validation->fails()) {
             return response()->json($validation->errors(), 202);
@@ -26,6 +26,7 @@ class UserController extends Controller
         $newUser = User::create($allData);
         $tokenStr = $newUser->createToken('api-application')->accessToken;
         $resArr["token"] = $tokenStr;
+        $resArr["status code"] = 200;
         return response()->json($resArr, 200);
     }
 
@@ -41,7 +42,12 @@ class UserController extends Controller
             $resArr['name'] = $user->username;
             return response()->json($resArr, 200);
         } else {
-            return response()->json(['error' => 'Unauthorized access'], 203);
+            return response()->json(['error' => 'Unauthorized access','status code'=>401], 401);
         }
     }
+    public function details()
+    {
+        return response()->json(['user'=> auth()->user()],200);
+    }
+
 }
