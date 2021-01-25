@@ -17,14 +17,18 @@ use App\Http\Controllers\ReviewController;
 */
 Route::middleware('auth:api')->group(function (){
     Route::get("/user",[UserController::class,"details"]);
+    Route::group(['prefix'=>'/review'],function(){
+        Route::post("add",[ReviewController::class,"addReview"]);
+    });
+    Route::group(['prefix'=>'/place'],function(){
+        Route::post("add",[PlaceController::class,"addPlace"]);
+        Route::put("updateinfo/{id}",[PlaceController::class,"updatePlaceInfo"]);
+       // Route::put("updatepictures/{id}",[PlaceController::class,"updatePlacePictures"]);
+
+    });
 
 });
 Route::post("/register",[UserController::class,"registration"]);
 Route::post("/login",[UserController::class,"login"]);
 Route::get("/login",[UserController::class,"login"])->name('login');
-Route::group(['prefix'=>'/place'],function(){
-    Route::post("add",[PlaceController::class,"addPlace"]);
-});
-Route::group(['prefix'=>'/review'],function(){
-    Route::post("add",[ReviewController::class,"addReview"]);
-});
+
