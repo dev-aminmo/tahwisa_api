@@ -27,6 +27,10 @@ class Place extends Model
         return $this->hasMany(PlacePicture::class);
     }
     public $timestamps = false;
+    /*
+     * this method will insert a place in places table and pictures in pictures table in the same time
+     * if an error occured nothing will be inserted
+     * */
     public function add($params){
         DB::transaction(function () use ($params){
           $id=  DB::table('places')->insertGetId([
@@ -40,7 +44,6 @@ class Place extends Model
             foreach ($pictures as $k=> $picture){
                 $arg=[];
                 $arg['path']=$picture;
-               // $arg['place_id']=$newPlace['id'];
                 DB::table('places_pictures')->insert([
                 'path'=>$arg['path'], 'place_id'=>$id
                 ]);

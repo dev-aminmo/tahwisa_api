@@ -22,23 +22,10 @@ class PlaceController extends Controller
        if ($validation->fails()) {
            return response()->json($validation->errors(), 202);
        }
-      // $v=Place::find(14)->pictures;
-      // $v=new Place();
-       //$v=$v->pictures;
-       //return response()->json($v);
        $allData = $request->all();
        try{
-          /* $newPlace = Place::create($allData);
-           $pictures=$allData['pictures'];
-           foreach ($pictures as $k=> $picture){
-               $arg=[];
-               $arg['path']=$picture;
-               $arg['place_id']=$newPlace['id'];
-               PlacePicture::create($arg);
-           }
-           return response()->json($newPlace, 200);*/
-           $p= new Place();
-           $p->add($allData);
+           $place= new Place();
+           $place->add($allData);
            $data = ['message' => 'place inserted successfully','data'=>$allData];
            return Response()->json($data,201);
        }catch (Exception $exception){
