@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PlaceController;
+use App\Http\Controllers\ReviewController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -26,3 +27,4 @@ Route::post("/register",[UserController::class,"registration"]);
 Route::post("/login",[UserController::class,"login"]);
 Route::get("/login",[UserController::class,"login"])->name('login');
 Route::post("/addplace",[PlaceController::class,"addPlace"]);
+Route::post("/addReview",[ReviewController::class,"addReview"]);

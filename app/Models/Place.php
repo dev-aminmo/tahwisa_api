@@ -22,6 +22,10 @@ class Place extends Model
     {
         return $this->hasMany(PlacePicture::class);
     }
+    public function reviews()
+    {
+        return $this->hasMany(PlacePicture::class);
+    }
     public $timestamps = false;
     public function add($params){
         DB::transaction(function () use ($params){
