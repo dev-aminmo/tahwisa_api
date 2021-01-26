@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PlaceController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\WishController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -30,6 +31,9 @@ Route::middleware('auth:api')->group(function (){
        // Route::put("updatepictures/{id}",[PlaceController::class,"updatePlacePictures"]);
 
     });
+    Route::post("/wish/add",[WishController::class,"add"]);
+    Route::post("/wish/remove",[WishController::class,"addReview"]);
+
 
 });
 Route::post("/register",[UserController::class,"registration"]);

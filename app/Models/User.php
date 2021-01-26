@@ -23,6 +23,10 @@ class User extends Authenticatable
         'password',
         'profile_picture'
     ];
+    public function wishes()
+    {
+        return $this->hasMany(WishListItem::class);
+    }
     public $timestamps = false;
     /**
      * The attributes that should be hidden for arrays.
@@ -42,4 +46,5 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
 }

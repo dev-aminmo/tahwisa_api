@@ -64,9 +64,9 @@ class UserController extends Controller
          $oldPath=auth()->user()['profile_picture'];
          User::where('id',$id)->update(['profile_picture'=>$result]);
          $data = ['message' => 'profile picture updated successfully','data'=>$result,'response code'=>201];
-        $url = Storage::url($result);
+        //$url = Storage::url($result);
         Storage::delete($oldPath);
-        $data['url']=$url;
+       // $data['url']=$url;
          return response()->json($data,201);
      }catch (Exception $e){
          $resArr["status code"] = 200;
@@ -75,5 +75,6 @@ class UserController extends Controller
      }
 
     }
+
 
 }
