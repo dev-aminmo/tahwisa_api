@@ -32,7 +32,7 @@ Route::middleware('auth:api')->group(function (){
 
     });
     Route::post("/wish/add",[WishController::class,"add"]);
-    Route::post("/wish/remove",[WishController::class,"addReview"]);
+    Route::delete("/wish/delete",[WishController::class,"delete"]);
 
 
 });
