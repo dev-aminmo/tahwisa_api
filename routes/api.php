@@ -16,7 +16,11 @@ use App\Http\Controllers\ReviewController;
 |
 */
 Route::middleware('auth:api')->group(function (){
-    Route::get("/user",[UserController::class,"details"]);
+    Route::group(['prefix'=>'/user'],function(){
+        Route::get("",[UserController::class,"details"]);
+        Route::post("/updatepicture",[UserController::class,"updateProfilePicture"]);
+        //Route::post("add",[ReviewController::class,"addReview"]);
+    });
     Route::group(['prefix'=>'/review'],function(){
         Route::post("add",[ReviewController::class,"addReview"]);
     });
