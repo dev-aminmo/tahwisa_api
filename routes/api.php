@@ -20,6 +20,8 @@ Route::middleware('auth:api')->group(function (){
     Route::group(['prefix'=>'/user'],function(){
         Route::get("",[UserController::class,"details"]);
         Route::post("/updatepicture",[UserController::class,"updateProfilePicture"]);
+
+        Route::post("/updatepicture2",[UserController::class,"updateProfilePicture2"]);
         //Route::post("add",[ReviewController::class,"addReview"]);
     });
     Route::group(['prefix'=>'/review'],function(){
