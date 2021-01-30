@@ -19,7 +19,7 @@ class CreateWishlistTable extends Migration
             $table->bigInteger('place_id')->unsigned();
 
             $table->foreign("user_id")->references('id')->on("users");
-            $table->foreign("place_id")->references('id')->on("places");
+            $table->foreign("place_id")->references('id')->on("places")->onDelete('cascade');;
             // $table->timestamps();
         });
     }

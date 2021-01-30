@@ -20,7 +20,6 @@ class CreatePlacesTable extends Migration
             $table->decimal('latitude', 10, 8);
             $table->decimal('longitude', 11, 8);
             $table->bigInteger('user_id')->unsigned();
-
             $table->foreign("user_id")->references('id')->on("users");
            // $table->timestamps();
         });
