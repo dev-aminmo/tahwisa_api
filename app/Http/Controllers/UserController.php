@@ -58,15 +58,16 @@ class UserController extends Controller
     public function updateProfilePicture(Request $request){
      try{
          $id= auth()->user()['id'];
-
-         // echo $id;die;
-         $result=$request->file('file')->store('public/users/profilePictures/'.$id);
+         $response = cloudinary()->upload($request->file('file')->getRealPath(),[
+             'folder'=> 'tahwisa/users/'.$id.'/',
+             'public_id'=>'profile_picture'.$id,
+             'overwrite'=>true,
+             'format'=>"webp"
+         ])->getSecurePath();
          $oldPath=auth()->user()['profile_picture'];
-         User::where('id',$id)->update(['profile_picture'=>$result]);
-         $data = ['message' => 'profile picture updated successfully','data'=>$result,'response code'=>201];
-        //$url = Storage::url($result);
+         User::where('id',$id)->update(['profile_picture'=>$response]);
+         $data = ['message' => 'profile picture updated successfully','data'=>$response,'response code'=>201];
         Storage::delete($oldPath);
-       // $data['url']=$url;
          return response()->json($data,201);
      }catch (Exception $e){
          $resArr["status code"] = 200;
