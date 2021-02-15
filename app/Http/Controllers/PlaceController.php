@@ -82,4 +82,8 @@ class PlaceController extends Controller
 
 
    }
+   public function all(Request $request){
+       $all =Place::all();
+       return response()->json($all,200);
+   }
 }

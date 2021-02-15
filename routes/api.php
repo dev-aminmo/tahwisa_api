@@ -28,7 +28,9 @@ Route::middleware('auth:api')->group(function (){
     Route::group(['prefix'=>'/place'],function(){
         Route::post("add",[PlaceController::class,"addPlace"]);
         Route::put("updateinfo/{id}",[PlaceController::class,"updatePlaceInfo"]);
-       // Route::put("updatepictures/{id}",[PlaceController::class,"updatePlacePictures"]);
+        Route::get("all",[PlaceController::class,"all"]);
+
+        // Route::put("updatepictures/{id}",[PlaceController::class,"updatePlacePictures"]);
 
     });
     Route::post("/wish/add",[WishController::class,"add"]);
