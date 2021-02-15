@@ -15,9 +15,12 @@ class Place extends Model
         'description',
         'latitude',
         'longitude',
-        'user_id'
+        'user_id',
+        'municipal_id'
     ];
-
+    public function user(){
+        return $this->belongsTo(User::class,'user_id');
+    }
     public function pictures()
     {
         return $this->hasMany(PlacePicture::class);
@@ -31,8 +34,33 @@ class Place extends Model
      * this method will insert a place in places table and pictures in pictures table in the same time
      * if an error occured nothing will be inserted
      * */
-    public function add($params){
-        DB::transaction(function () use ($params){
+    public static  function add($jsonData,$files,$id){
+        $placeid=  DB::table('places')->insertGetId([
+            'title'=>$jsonData["title"],
+            'description'=>$jsonData["description"],
+            'latitude'=>$jsonData["latitude"],
+            'longitude'=>$jsonData["longitude"],
+            'user_id'=>$id,
+            'municipal_id'=>$jsonData["municipal_id"]
+        ]);
+
+        $pictures=[];
+        foreach($files as $file)
+        {
+            $pictures[] = cloudinary()->upload($file->getRealPath(),[
+                'folder'=> 'tahwisa/places/'.$placeid.'/',
+                'format'=>"webp",
+            ])->getSecurePath();
+        }
+        foreach ($pictures as $k=> $picture){
+            $arg=[];
+            $arg['path']=$picture;
+            DB::table('places_pictures')->insert([
+                'path'=>$arg['path'], 'place_id'=>$placeid
+            ]);
+
+        }
+        /*DB::transaction(function () use ($params){
           $id=  DB::table('places')->insertGetId([
                 'title'=>$params["title"],
                 'description'=>$params["description"],
@@ -50,7 +78,7 @@ class Place extends Model
 
             }
 
-        });
+        });*/
     }
 
 }
