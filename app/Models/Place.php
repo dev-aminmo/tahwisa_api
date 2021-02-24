@@ -27,7 +27,7 @@ class Place extends Model
     }
     public function reviews()
     {
-        return $this->hasMany(PlacePicture::class);
+        return $this->hasMany(Review::class);
     }
     public $timestamps = false;
     /*

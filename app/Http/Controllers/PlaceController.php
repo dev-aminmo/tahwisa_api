@@ -83,7 +83,7 @@ class PlaceController extends Controller
 
    }
    public function all(Request $request){
-       $all =Place::all();
-       return response()->json($all,200);
+       $places =Place::has('pictures')->with('pictures','reviews')->paginate(10);
+       return response()->json($places,200);
    }
 }
