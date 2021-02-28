@@ -128,6 +128,7 @@
       <path value="$PROJECT_DIR$/vendor/cloudinary/cloudinary_php" />
       <path value="$PROJECT_DIR$/vendor/cloudinary-labs/cloudinary-laravel" />
       <path value="$PROJECT_DIR$/vendor/squizlabs/php_codesniffer" />
+      <path value="$PROJECT_DIR$/vendor/staudenmeir/eloquent-eager-limit" />
     </include_path>
   </component>
   <component name="PhpUnit">

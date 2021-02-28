@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\PlacePicture;
 class Place extends Model
 {
+    use \Staudenmeir\EloquentEagerLimit\HasEagerLimit;
     use HasFactory;
 
     protected $fillable = [
@@ -23,11 +24,11 @@ class Place extends Model
     }
     public function pictures()
     {
-        return $this->hasMany(PlacePicture::class);
+        return $this->hasMany(PlacePicture::class,'place_id');
     }
     public function reviews()
     {
-        return $this->hasMany(Review::class);
+        return $this->hasMany(Review::class,'place_id');
     }
     public $timestamps = false;
     /*

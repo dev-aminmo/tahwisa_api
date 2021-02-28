@@ -17,6 +17,6 @@ class Review extends Model
     ];
 
     public function place(){
-        return $this->belongsTo(Place::class);
+        return $this->belongsTo(Place::class,'place_id');
     }
 }

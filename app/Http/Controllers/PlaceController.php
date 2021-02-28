@@ -6,6 +6,7 @@ use Exception;
 use http\Env\Response;
 use Illuminate\Http\Request;
 use App\Models\Place;
+use App\Models\Review;
 use App\Models\PlacePicture;
 use Illuminate\Support\Facades\DB;
 use Validator;
@@ -83,7 +84,12 @@ class PlaceController extends Controller
 
    }
    public function all(Request $request){
-       $places =Place::has('pictures')->with('pictures','reviews')->paginate(10);
+         $places =Place::has('pictures')->with(['pictures'=> function ($query){
+              $query->select(//
+                  'path',
+                  'place_id'
+              )->limit(1);;
+          }])->withAvg('reviews','vote')->get();
        return response()->json($places,200);
    }
 }
