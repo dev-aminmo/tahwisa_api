@@ -95,7 +95,11 @@ class PlaceController extends Controller
    public function  get(Request $request){
        $id = Route::current()->parameter('id');
        try{
-           $place =Place::where('id',$id)->with(['pictures'])->withAvg('reviews','vote')->get();
+           $place =Place::where('id',$id)->with(['pictures'])->withAvg('reviews','vote')->withCount('reviews')->with(['user'=> function ($query) {
+               $query->select(
+                   'username',
+               'profile_picture');
+           }])->get();
            if(count($place)==0){
                return response()->json(["error"=>401,"message"=>"place doesn't exist"],401);
            }
