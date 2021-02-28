@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Place;
 use App\Models\Review;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 use Validator;
 
 class ReviewController extends Controller
@@ -33,6 +35,18 @@ class ReviewController extends Controller
            // $response=[];
             $response['error']="an error has occured";
             return response()->json($response, 400);
+        }
+    }
+    function get(Request $request){
+        $id = Route::current()->parameter('id');
+        try{
+           $reviwes= Review::where('place_id',$id)->paginate(2);
+            if(count($reviwes)==0){
+                return response()->json(["error"=>401,"message"=>"place doesn't have reviews"],401);
+            }
+            return response()->json($reviwes,200);
+        }catch (Exception $exception){
+            return response()->json(["error"=>401,"message"=>"error occured"],401);
         }
     }
 }

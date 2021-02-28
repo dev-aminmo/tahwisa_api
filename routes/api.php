@@ -24,11 +24,14 @@ Route::middleware('auth:api')->group(function (){
     });
     Route::group(['prefix'=>'/review'],function(){
         Route::post("add",[ReviewController::class,"addReview"]);
+        Route::get("{id}",[ReviewController::class,"get"]);
+
     });
     Route::group(['prefix'=>'/place'],function(){
         Route::post("add",[PlaceController::class,"addPlace"]);
         Route::put("updateinfo/{id}",[PlaceController::class,"updatePlaceInfo"]);
         Route::get("all",[PlaceController::class,"all"]);
+        Route::get("{id}",[PlaceController::class,"get"]);
 
         // Route::put("updatepictures/{id}",[PlaceController::class,"updatePlacePictures"]);
 

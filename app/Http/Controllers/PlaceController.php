@@ -89,7 +89,20 @@ class PlaceController extends Controller
                   'path',
                   'place_id'
               )->limit(1);;
-          }])->withAvg('reviews','vote')->get();
+          }])->withAvg('reviews','vote')->paginate(10);
        return response()->json($places,200);
+   }
+   public function  get(Request $request){
+       $id = Route::current()->parameter('id');
+       try{
+           $place =Place::where('id',$id)->with(['pictures'])->withAvg('reviews','vote')->get();
+           if(count($place)==0){
+               return response()->json(["error"=>401,"message"=>"place doesn't exist"],401);
+           }
+           return response()->json($place,200);
+       }catch (Exception $exception){
+           return response()->json(["error"=>401,"message"=>"place doesn't exist"],401);
+       }
+
    }
 }
