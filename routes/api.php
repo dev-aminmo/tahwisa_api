@@ -44,4 +44,8 @@ Route::middleware('auth:api')->group(function (){
 Route::post("/register",[UserController::class,"registration"]);
 Route::post("/login",[UserController::class,"login"]);
 Route::get("/login",[UserController::class,"login"])->name('login');
+Route::get("/h",function (){
+    return "hello";
+});
+
 

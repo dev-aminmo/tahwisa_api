@@ -23,13 +23,20 @@ class UserController extends Controller
         if ($validation->fails()) {
             return response()->json($validation->errors(), 202);
         }
-        $allData = $request->all();
-        $allData['password'] = bcrypt($allData['password']);
-        $newUser = User::create($allData);
-        $tokenStr = $newUser->createToken('api-application')->accessToken;
-        $resArr["token"] = $tokenStr;
-        $resArr["status code"] = 200;
-        return response()->json($resArr, 200);
+        try{
+            $allData = $request->all();
+            $allData['password'] = bcrypt($allData['password']);
+            $newUser = User::create($allData);
+            $tokenStr = $newUser->createToken('api-application')->accessToken;
+            $resArr["token"] = $tokenStr;
+            $resArr["status code"] = 201;
+            return response()->json($resArr, 201);
+        }catch (\Exception $e){
+
+            return response()->json(["error"=>"error occurred"], 202);
+
+        }
+
     }
 
     public function login(Request $request)
