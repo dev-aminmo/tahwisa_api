@@ -5,6 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
+
 class CreateMunicipalesTable extends Migration
 {
     /**
@@ -16,20 +17,27 @@ class CreateMunicipalesTable extends Migration
     {
         Schema::create('municipales', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name_ar');
+            $table->string('name_fr');
             $table->bigInteger('state_id')->unsigned();
             $table->foreign("state_id")->references('id')->on("states");
-            // $table->timestamps();
         });
-        $states = json_decode(file_get_contents(storage_path('wilayas.json')), true)[0];
+        $states = json_decode(file_get_contents(storage_path('algeria-cities.json')), true)["wilayas"];
         foreach ($states as $key=>$value){
-            foreach ($value["communes"] as $k=>$v) {
-                echo $v["commune_id"];
-                echo $v["name"];
-                DB::table('municipales')->insert(['id'=>$v["commune_id"],'name'=>$v["name"],'state_id'=>$value["wilaya_id"]]);
-            }
-        }
-    }
+            foreach ($value["dairas"] as &$daira) {
+                if(key_exists("communes",$daira))   foreach ($daira["communes"] as &$v) {
+                    DB::table('municipales')->insert([
+                        'id'=>$v["code"],'name_ar'=>$v["name_ar"]
+                        ,'name_fr'=>$v["name"],
+                        'state_id'=>$value["code"]]);
+                }
+
+
+
+            }}}
+
+
+
 
     /**
      * Reverse the migrations.
@@ -41,3 +49,5 @@ class CreateMunicipalesTable extends Migration
         Schema::dropIfExists('municipales');
     }
 }
+
+
