@@ -6,6 +6,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\PlaceController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\WishController;
+use \App\Http\Controllers\StatesController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -41,6 +42,8 @@ Route::middleware('auth:api')->group(function (){
 
 
 });
+Route::get("/states",[StatesController::class,"all"]);
+Route::get("/municipales/{id}",[StatesController::class,"municipales"]);
 Route::post("/register",[UserController::class,"registration"]);
 Route::post("/login",[UserController::class,"login"]);
 Route::get("/login",[UserController::class,"login"])->name('login');

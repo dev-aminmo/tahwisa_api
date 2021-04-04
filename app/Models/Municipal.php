@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Municipal extends Model
 {
     use HasFactory;
+    protected $table="municipales";
 
     public function user(){
         return $this->belongsTo(State::class,'state_id');
