@@ -32,7 +32,8 @@ class PlaceController extends Controller
        if($validation->fails()) {
          return response()->json($validation->errors(), 202);
        }
-       $jsonData= json_decode($request->get("data"),true);
+       $jsonData=$request->get("data");
+       if(!is_array($jsonData)) $jsonData= json_decode($request->get("data"),true);
        $validation = Validator::make($jsonData, [
            'title'  => 'required|string',
            'description'=>'string',
@@ -46,8 +47,8 @@ class PlaceController extends Controller
        }
        $id= auth()->user()['id'];
        try{
-           Place::add($jsonData,$request->file('file'),$id);die;
-           $data = ['message' => 'place inserted successfully','data'=>$allData];
+           Place::add($jsonData,$request->file('file'),$id);
+           $data = ['message' => 'place inserted successfully','code'=>201];
            return Response()->json($data,201);
        }catch (Exception $exception){
            $response=[];
