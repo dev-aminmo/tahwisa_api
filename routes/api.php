@@ -7,6 +7,7 @@ use App\Http\Controllers\PlaceController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\WishController;
 use \App\Http\Controllers\StatesController;
+use App\Http\Controllers\PasswordResetController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -17,6 +18,13 @@ use \App\Http\Controllers\StatesController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'password'
+], function () {
+    Route::post('create', [PasswordResetController::class,"create"]);
+});
+
 Route::middleware('auth:api')->group(function (){
     Route::group(['prefix'=>'/user'],function(){
         Route::get("",[UserController::class,"details"]);
