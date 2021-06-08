@@ -59,5 +59,6 @@ Route::get("/login",[UserController::class,"login"])->name('login');
 Route::get("/h",function (){
     return "hello";
 });
+Route::post('social/login', [UserController::class, 'socialLogin']);
 
 

@@ -6,9 +6,10 @@ use http\Env\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use Laravel\Socialite\Facades\Socialite;
 use Validator;
 use Illuminate\Support\Facades\Storage;
-
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -23,6 +24,7 @@ class UserController extends Controller
         if ($validation->fails()) {
             return response()->json($validation->errors(), 202);
         }
+
         try{
             $allData = $request->all();
             $allData['password'] = bcrypt($allData['password']);
@@ -83,7 +85,49 @@ class UserController extends Controller
      }
 
     }
+    /**
+     * Social Login
+     */
+    public function socialLogin(Request $request)
+    {
+        $provider = "google"; // or $request->input('provider_name') for multiple providers
+        $token = $request->input('access_token');
+        // get the provider's user. (In the provider server)
+        $providerUser = Socialite::driver($provider)->userFromToken($token);
+        $u["id"]= $providerUser->id;
+        $u["username"]= $providerUser->name;
+        $u["profile_picture"]= $providerUser->avatar;
+        $u["email"]= $providerUser->email;
 
+
+        // check if access token exists etc..
+        // search for a user in our server with the specified provider id and provider name
+        $user = User::where('provider_name', $provider)->where('provider_id', $providerUser->id)->first();
+        // if there is no record with these data, create a new user
+        if($user == null) {
+            $user = User::where('email', $u["email"])->first();
+            if(!empty($user)){
+                $user->provider_name=$provider;
+                $user->provider_id= $providerUser->id;
+               $user->save();
+            }else{
+                $user = User::create([
+                    "username"=>$u["username"],
+                    "profile_picture"=>$u["profile_picture"],
+                    "email"=> $u["email"],
+                    "password"=> Hash::make(str_random(8)),
+                    'provider_name' => $provider,
+                    'provider_id' => $providerUser->id,
+                ]);
+            }}
+        // create a token for the user, so they can login
+        $token = $user->createToken(env('APP_NAME'))->accessToken;
+        // return the token for usage
+        return response()->json([
+            'success' => true,
+            'token' => $token
+        ]);
+    }
     /**
      * Logout user (Revoke the token)
      *

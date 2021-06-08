@@ -77,19 +77,7 @@ class PasswordResetController extends Controller
             'token' => 'required|string'
         ]);
         if ($validator->fails()) {
-
-            //find
-            // return redirect()->route('find', ['token' => 1]);
-            //return redirect()->back()->withInput(["error"=>'hello']);
-            //  return redirect()->back()->with('status', 'Profile updated!');
-
-            // return redirect()->back()->withErrors($validator)->withInput();
-            // return redirect()->back()->withErrors(['error'=>'errr']);
-
-            // flash('Message')->error();
-            //flash('Message')->error()->important();
             return redirect()->back()->withErrors($validator);
-            //  return response()->json($validator->messages(), 400);
         }
 
         $passwordReset = PasswordReset::where([

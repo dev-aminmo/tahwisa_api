@@ -21,6 +21,6 @@ Route::group([
     'middleware' => 'web'
 ], function () {
 
-    Route::post('reset', [PasswordResetController::class,"reset"])->name("resetpassword");
+    Route::post('password/reset', [PasswordResetController::class,"reset"])->name("resetpassword");
     Route::get('password/find/{token}', [PasswordResetController::class,'find'])->name('find');
 });
