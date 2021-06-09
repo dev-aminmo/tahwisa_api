@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\TagController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
@@ -53,6 +54,7 @@ Route::middleware('auth:api')->group(function (){
 });
 Route::get("/states",[StatesController::class,"all"]);
 Route::get("/municipales/{id}",[StatesController::class,"municipales"]);
+Route::get("/tags",[TagController::class,"tags"]);
 Route::post("/register",[UserController::class,"registration"]);
 Route::post("/login",[UserController::class,"login"]);
 Route::get("/login",[UserController::class,"login"])->name('login');

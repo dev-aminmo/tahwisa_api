@@ -93,7 +93,16 @@ class UserController extends Controller
         $provider = "google"; // or $request->input('provider_name') for multiple providers
         $token = $request->input('access_token');
         // get the provider's user. (In the provider server)
-        $providerUser = Socialite::driver($provider)->userFromToken($token);
+        try {
+            $providerUser = Socialite::driver($provider)->userFromToken($token);
+
+        }catch(\Exception $e){
+            return response()->json([
+                'success' => false,
+                'message' => "invalid token"
+            ],401);
+        }
+
         $u["id"]= $providerUser->id;
         $u["username"]= $providerUser->name;
         $u["profile_picture"]= $providerUser->avatar;
@@ -126,7 +135,7 @@ class UserController extends Controller
         return response()->json([
             'success' => true,
             'token' => $token
-        ]);
+        ],201);
     }
     /**
      * Logout user (Revoke the token)

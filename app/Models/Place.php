@@ -26,6 +26,10 @@ class Place extends Model
     {
         return $this->hasMany(PlacePicture::class,'place_id');
     }
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class);
+    }
     public function reviews()
     {
         return $this->hasMany(Review::class,'place_id');
