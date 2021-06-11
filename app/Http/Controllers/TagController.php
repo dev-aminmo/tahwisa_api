@@ -13,7 +13,7 @@ class TagController extends Controller
     public function tags(Request $request){
         $query = $request->get( 'query');
         if($query){
-        $data=    Tag::where("name","like","%".$query."%")->get();
+        $data=    Tag::where("name","like","%".$query."%")->select("name")->get();
         }else{
             $data= Tag::select("name")->get();
 

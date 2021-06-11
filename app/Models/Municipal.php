@@ -10,7 +10,7 @@ class Municipal extends Model
     use HasFactory;
     protected $table="municipales";
 
-    public function user(){
+    public function state(){
         return $this->belongsTo(State::class,'state_id');
     }
 }

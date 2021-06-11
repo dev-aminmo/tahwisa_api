@@ -18,8 +18,6 @@ class CreatePlacesPicturesTable extends Migration
             $table->string("path",2083);
             $table->bigInteger("place_id")->unsigned();
             $table->foreign("place_id")->references('id')->on("places")->onDelete('cascade');;
-
-
             //$table->timestamps();
         });
     }

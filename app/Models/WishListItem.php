@@ -15,6 +15,18 @@ class WishListItem extends Model
     ];
 
     public $timestamps = false;
+    public function user(){
+        return $this->belongsTo(User::class,"user_id");
+    }
+    public function place(){
+        return $this->belongsTo(Place::class,"place_id");
+    }
+/*
+    public function places()
+    {
+        return $this->hasMany(Place::class);
+    }*/
+
 
 
 

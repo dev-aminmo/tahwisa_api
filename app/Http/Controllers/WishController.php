@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Place;
+use App\Models\User;
 use App\Models\WishListItem;
 use Illuminate\Http\Request;
 use Validator;
@@ -50,6 +52,39 @@ class WishController extends Controller
 
             $data = ['message' => 'place removed from wishlist successfully'];
             return Response()->json($data,202);
+
+        }catch (\Exception $e){
+            // $response=[];
+            echo $e;
+            $response['error']="an error has occured";
+            return response()->json($response, 400);
+
+        }
+
+    }
+    public function all(Request $request){
+
+        try{
+            $id= auth()->user()['id'];
+
+          $data=  WishListItem::where('user_id',$id)->with(['place'=>function($query){
+              $query->whereHas('pictures')->with(['pictures'=> function ($query){
+                  $query->select(//
+                      'path',
+                      'place_id'
+                  )->limit(1);;
+              }])->withAvg('reviews','vote');
+          }])->paginate(10)->pluck('place')->each(function ($place){
+           $municipal=   $place->municipal_id;
+           $place->municipal=$municipal->name_fr;
+           $place->state=$municipal->state->name_fr;
+           unset($place->municipal_id);
+           return $place;
+          });
+
+
+            $data = ['message' => 'success', 'data'=>$data];
+            return Response()->json($data,200);
 
         }catch (\Exception $e){
             // $response=[];

@@ -10,6 +10,7 @@ class Place extends Model
 {
     use \Staudenmeir\EloquentEagerLimit\HasEagerLimit;
     use HasFactory;
+    public $timestamps = false;
 
     protected $fillable = [
         'title',
@@ -30,14 +31,28 @@ class Place extends Model
     {
         return $this->belongsToMany(Tag::class);
     }
+    public function getMunicipalIdAttribute($value)
+    {
+        return Municipal::where("id",$value)->select("id","name_fr","state_id")->with(["state"=>function($query){
+            $query->select("id","name_fr");
+        }])->first();
+    }
     public function reviews()
     {
         return $this->hasMany(Review::class,'place_id');
     }
-    public $timestamps = false;
+    public function wishes()
+    {
+        return $this->hasMany(WishListItem::class,'place_id');
+    }
+
+   /* public function users_wished()
+    {
+        return $this->belongsToMany(User::class);
+    }*/
     /*
      * this method will insert a place in places table and pictures in pictures table in the same time
-     * if an error occured nothing will be inserted
+     * if an error occured nothing will be inserteds
      * */
     public static  function add($jsonData,$files,$id){
         $placeid=  DB::table('places')->insertGetId([
