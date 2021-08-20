@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Route;
 
 class StatesController extends Controller
 {
-    //
     public function all(Request $request){
         $states =State::all();
         return response()->json([
@@ -18,8 +17,6 @@ class StatesController extends Controller
     ],200);
     }
     public function municipales(Request $request){
-     //   dd($request->id);
-      //  echo($request->id);die;
         $id = Route::current()->parameter('id');
         $states =Municipal::where('state_id',$id)->get();
         return response()->json([

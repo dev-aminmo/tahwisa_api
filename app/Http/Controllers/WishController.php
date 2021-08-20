@@ -1,9 +1,5 @@
 <?php
-
 namespace App\Http\Controllers;
-
-use App\Models\Place;
-use App\Models\User;
 use App\Models\WishListItem;
 use Illuminate\Http\Request;
 use Validator;
@@ -28,8 +24,6 @@ class WishController extends Controller
             return Response()->json($data,201);
 
         }catch (\Exception $e){
-            // $response=[];
-            echo $e;
             $response['error']="an error has occured";
             return response()->json($response, 400);
 
@@ -54,8 +48,6 @@ class WishController extends Controller
             return Response()->json($data,202);
 
         }catch (\Exception $e){
-            // $response=[];
-            echo $e;
             $response['error']="an error has occured";
             return response()->json($response, 400);
 
@@ -87,8 +79,6 @@ class WishController extends Controller
             return Response()->json($data,200);
 
         }catch (\Exception $e){
-            // $response=[];
-            echo $e;
             $response['error']="an error has occured";
             return response()->json($response, 400);
 

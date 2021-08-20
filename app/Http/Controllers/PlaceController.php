@@ -110,4 +110,16 @@ class PlaceController extends Controller
        }
 
    }
+   public function search(Request $request){
+       $keyword = $request->get( 'query');
+       $data= Place::where(function ($query) use($keyword) {
+           $query->where('title', 'like', '%' . $keyword . '%')
+               ->orWhere('description', 'like', '%' . $keyword . '%');
+       })->select(['id','title',])->with(['pictures'=> function ($query){
+               $query->select(//
+                   'path',
+                   'place_id'
+               )->limit(1);}])->get();
+   return response()->json($data,200);
+   }
 }
