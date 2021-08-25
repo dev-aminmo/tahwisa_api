@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Tag;
 use Exception;
 use http\Env\Response;
 use Illuminate\Http\Request;
@@ -90,7 +91,7 @@ class PlaceController extends Controller
                   'path',
                   'place_id'
               )->limit(1);;
-          }])->withAvg('reviews','vote')->paginate(10);
+          }])->withAvg('reviews','vote')->paginate(2);
        return response()->json($places,200);
    }
    public function  get(Request $request){
@@ -110,16 +111,14 @@ class PlaceController extends Controller
        }
 
    }
-   public function search(Request $request){
+   public function autocomplete(Request $request){
        $keyword = $request->get( 'query');
-       $data= Place::where(function ($query) use($keyword) {
+       $places= Place::where(function ($query) use($keyword) {
            $query->where('title', 'like', '%' . $keyword . '%')
                ->orWhere('description', 'like', '%' . $keyword . '%');
-       })->select(['id','title',])->with(['pictures'=> function ($query){
-               $query->select(//
-                   'path',
-                   'place_id'
-               )->limit(1);}])->get();
+       })->select(['id','title','description'])->get()->append("model");
+       $tags= Tag::where('name', 'like', '%' . $keyword . '%')->get()->append("model");
+     $data=  $places->merge($tags);
    return response()->json($data,200);
    }
 }

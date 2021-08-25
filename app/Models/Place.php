@@ -37,6 +37,12 @@ class Place extends Model
             $query->select("id","name_fr");
         }])->first();
     }
+        public function getModelAttribute()
+    {
+
+        return  $this->model="place";
+    }
+
     public function reviews()
     {
         return $this->hasMany(Review::class,'place_id');

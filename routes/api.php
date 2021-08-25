@@ -42,7 +42,7 @@ Route::middleware('auth:api')->group(function (){
         Route::post("add",[PlaceController::class,"addPlace"]);
         Route::put("updateinfo/{id}",[PlaceController::class,"updatePlaceInfo"]);
         Route::get("all",[PlaceController::class,"all"]);
-        Route::get("search",[PlaceController::class,"search"]);
+        Route::get("autocomplete",[PlaceController::class,"autocomplete"]);
         Route::get("{id}",[PlaceController::class,"get"]);
 
 

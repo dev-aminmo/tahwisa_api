@@ -15,4 +15,10 @@ class Tag extends Model
     {
         return $this->belongsToMany(Place::class, 'places_tags', 'place_id', 'tag_id');
     }
+    public function getModelAttribute()
+    {
+
+        return  $this->model="tag";
+    }
+
 }
