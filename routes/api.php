@@ -19,11 +19,18 @@ use App\Http\Controllers\PasswordResetController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
 Route::group([
     'middleware' => 'api',
     'prefix' => 'password'
 ], function () {
     Route::post('create', [PasswordResetController::class,"create"]);
+});
+Route::group([
+    'middleware' => 'api',
+], function () {
+    Route::get("/place/autocomplete",[PlaceController::class,"autocomplete"]);
+    Route::get("/place/search",[PlaceController::class,"search"]);
 });
 
 Route::middleware('auth:api')->group(function (){
@@ -42,7 +49,8 @@ Route::middleware('auth:api')->group(function (){
         Route::post("add",[PlaceController::class,"addPlace"]);
         Route::put("updateinfo/{id}",[PlaceController::class,"updatePlaceInfo"]);
         Route::get("all",[PlaceController::class,"all"]);
-        Route::get("autocomplete",[PlaceController::class,"autocomplete"]);
+
+
         Route::get("{id}",[PlaceController::class,"get"]);
 
 

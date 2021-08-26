@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePlacesTagsTable extends Migration
+class CreatePlaceTagTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreatePlacesTagsTable extends Migration
      */
     public function up()
     {
-        Schema::create('places_tags', function (Blueprint $table) {
+        Schema::create('place_tag', function (Blueprint $table) {
 
             $table->id();
             $table->bigInteger('place_id')->unsigned();
@@ -30,6 +30,6 @@ class CreatePlacesTagsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('places_tags');
+        Schema::dropIfExists('place_tag');
     }
 }

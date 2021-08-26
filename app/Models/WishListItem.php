@@ -21,13 +21,6 @@ class WishListItem extends Model
     public function place(){
         return $this->belongsTo(Place::class,"place_id");
     }
-/*
-    public function places()
-    {
-        return $this->hasMany(Place::class);
-    }*/
-
-
 
 
 }

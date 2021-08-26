@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\MyResponse;
 use App\Models\Tag;
 use Exception;
 use http\Env\Response;
@@ -16,6 +17,7 @@ use Illuminate\Support\Facades\Route;
 
 class PlaceController extends Controller
 {
+    use MyResponse;
    public function addPlace(Request $request){
 
 
@@ -118,7 +120,21 @@ class PlaceController extends Controller
                ->orWhere('description', 'like', '%' . $keyword . '%');
        })->select(['id','title','description'])->get()->append("model");
        $tags= Tag::where('name', 'like', '%' . $keyword . '%')->get()->append("model");
-     $data=  $places->merge($tags);
-   return response()->json($data,200);
+     $data=  $tags->toBase()->merge($places);
+
+       return $this->returnDataResponse($data);
+   }
+   public function search(Request $request){
+       $keyword = $request->get( 'query');
+       $places= Place::where(function ($query) use($keyword) {
+           $query->where('title', 'like', '%' . $keyword . '%')
+               ->orWhere('description', 'like', '%' . $keyword . '%');
+       })->get();
+      $places_from_tags= Tag::where('name', 'like', '%' . $keyword . '%')->with("places")->get()->pluck('places')->collapse();
+
+       //$tags= Tag::where('name', 'like', '%' . $keyword . '%')->get()->append("model");
+    $data=  $places->merge($places_from_tags);
+
+   return $this->returnDataResponse($data);
    }
 }

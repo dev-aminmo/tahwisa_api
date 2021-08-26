@@ -6,11 +6,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use App\Models\PlacePicture;
+use Laravel\Scout\Searchable;
+
 class Place extends Model
 {
     use \Staudenmeir\EloquentEagerLimit\HasEagerLimit;
     use HasFactory;
+    use Searchable;
     public $timestamps = false;
+    protected $hidden = ['laravel_through_key'];
+
 
     protected $fillable = [
         'title',
@@ -27,10 +32,10 @@ class Place extends Model
     {
         return $this->hasMany(PlacePicture::class,'place_id');
     }
-    public function tags()
+   /* public function tags()
     {
         return $this->belongsToMany(Tag::class);
-    }
+    }*/
     public function getMunicipalIdAttribute($value)
     {
         return Municipal::where("id",$value)->select("id","name_fr","state_id")->with(["state"=>function($query){
@@ -47,19 +52,45 @@ class Place extends Model
     {
         return $this->hasMany(Review::class,'place_id');
     }
+
     public function wishes()
     {
         return $this->hasMany(WishListItem::class,'place_id');
     }
 
-   /* public function users_wished()
+
+    /*public function tags()
     {
-        return $this->belongsToMany(User::class);
+        return $this->hasMany(PlaceTag::class,'place_id');
     }*/
-    /*
-     * this method will insert a place in places table and pictures in pictures table in the same time
-     * if an error occured nothing will be inserteds
-     * */
+    public function tags()
+    {
+        return $this->hasManyThrough(Tag::class, PlaceTag::class,
+                 'place_id', // Foreign key on the environments table...
+            'id', // Foreign key on the deployments table...
+            'id', // Local key on the projects table...
+            'id' // Local key on the environments table...
+        );
+    }
+
+    public function toSearchableArray() {
+       // $a = $this->toArray();
+        $tags = $this->tags()->get(['name'])->map( function ($tag) {
+            return $tag['name'];
+        });
+        $a['tags'] = implode(' ', $tags->toArray());
+       // return $a;
+        return [
+            'id' => $this->id,
+            'title' => $this->title,
+            'description' => $this->description,
+          'tags'=> $a['tags'],
+           // 'path' => $this->ancestorsAndSelf->pluck('objectable.name')->reverse()->join('/'),
+        ];
+    }
+
+
+
     public static  function add($jsonData,$files,$id){
         $placeid=  DB::table('places')->insertGetId([
             'title'=>$jsonData["title"],
