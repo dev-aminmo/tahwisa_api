@@ -141,15 +141,22 @@ class PlaceController extends Controller
    }
    public function search(Request $request){
        $keyword = $request->get( 'query');
-       $query=   Place::where(function ($query) use($keyword) {
+       $query=null;
+       if(request('tag')) {
+           $query=   Place::where(function ($query){
+               $query->whereHas('tags', function ($query){
+                       $query->where('tag_id',request('tag'));
+                   });
+           });
+       }else{
+           $query=   Place::where(function ($query) use($keyword) {
            $query->where('title', 'like', '%' . $keyword . '%')
                ->orWhere('description', 'like', '%' . $keyword . '%')
                ->orWhereHas('tags', function ($query) use ($keyword){
                    $query->where('name', 'like', '%'.$keyword.'%');
                });
-
        });
-
+       }
        if(request('rating_min')) {
            $query->whereHas('reviews',  function ($query){
                $query->where('vote', '>=', request('rating_min'));
@@ -169,7 +176,7 @@ class PlaceController extends Controller
                });
            });
        }
-      $data=$query->paginate(2);
+      $data=$query->paginate(10);
        return $this->returnDataResponse( $data);
    }
 }
