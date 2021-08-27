@@ -113,7 +113,22 @@ class PlaceController extends Controller
        }
 
    }
-   public function autocomplete(Request $request){
+   /*public function autocomplete(Request $request){
+       $keyword = $request->get( 'query');
+       $places= Place::where(function ($query) use($keyword) {
+           $query->where('title', 'like', '%' . $keyword . '%')
+               ->orWhere('description', 'like', '%' . $keyword . '%')
+               ->orWhereHas('tags', function ($query) use ($keyword){
+                   $query->where('name', 'like', '%'.$keyword.'%');
+               });
+
+       })->select(['id','title','description'])->get()->append("model");
+     //  $tags= Tag::where('name', 'like', '%' . $keyword . '%')->get()->append("model");
+    // $data=  $tags->toBase()->merge($places);
+
+       return $this->returnDataResponse($places);
+   }*/
+      public function autocomplete(Request $request){
        $keyword = $request->get( 'query');
        $places= Place::where(function ($query) use($keyword) {
            $query->where('title', 'like', '%' . $keyword . '%')
@@ -126,15 +141,35 @@ class PlaceController extends Controller
    }
    public function search(Request $request){
        $keyword = $request->get( 'query');
-       $places= Place::where(function ($query) use($keyword) {
+       $query=   Place::where(function ($query) use($keyword) {
            $query->where('title', 'like', '%' . $keyword . '%')
-               ->orWhere('description', 'like', '%' . $keyword . '%');
-       })->get();
-      $places_from_tags= Tag::where('name', 'like', '%' . $keyword . '%')->with("places")->get()->pluck('places')->collapse();
+               ->orWhere('description', 'like', '%' . $keyword . '%')
+               ->orWhereHas('tags', function ($query) use ($keyword){
+                   $query->where('name', 'like', '%'.$keyword.'%');
+               });
 
-       //$tags= Tag::where('name', 'like', '%' . $keyword . '%')->get()->append("model");
-    $data=  $places->merge($places_from_tags);
+       });
 
-   return $this->returnDataResponse($data);
+       if(request('rating_min')) {
+           $query->whereHas('reviews',  function ($query){
+               $query->where('vote', '>=', request('rating_min'));
+           });
+       }
+       if(request('rating_max')) {
+           $query->whereHas('reviews',  function ($query){
+               $query->where('vote', '<=', request('rating_max'));
+           });
+       }
+       if(request('municipal')) {
+           $query->where('municipal_id', request('municipal'));
+       }else if(request('state')){
+           $query->whereHas('municipal', function ($query){
+               $query->whereHas('state', function ($query){
+                   $query->where('id',request('state'));
+               });
+           });
+       }
+      $data=$query->paginate(2);
+       return $this->returnDataResponse( $data);
    }
 }

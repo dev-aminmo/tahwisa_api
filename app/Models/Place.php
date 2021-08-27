@@ -28,6 +28,9 @@ class Place extends Model
     public function user(){
         return $this->belongsTo(User::class,'user_id');
     }
+    public function municipal(){
+        return $this->belongsTo(Municipal::class,'municipal_id');
+    }
     public function pictures()
     {
         return $this->hasMany(PlacePicture::class,'place_id');
