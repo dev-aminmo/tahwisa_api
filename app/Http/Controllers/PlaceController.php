@@ -176,7 +176,7 @@ class PlaceController extends Controller
                });
            });
        }
-      $data=$query->paginate(10);
+      $data=$query->paginate(2);
        return $this->returnDataResponse( $data);
    }
 }

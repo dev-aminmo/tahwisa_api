@@ -61,6 +61,7 @@ Route::middleware('auth:api')->group(function (){
     Route::get("/wishes",[WishController::class,"all"]);
     Route::delete("/wish/delete",[WishController::class,"delete"]);
 Route::get("tags",[TagController::class,"tags"]);
+Route::get("tags/top",[TagController::class,"top"]);
 
 });
 Route::get("/states",[StatesController::class,"all"]);
