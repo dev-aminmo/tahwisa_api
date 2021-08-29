@@ -14,7 +14,7 @@ class AddPictureToTags extends Migration
     public function up()
     {
         Schema::table('tags', function (Blueprint $table) {
-            $table->string("path",2083)->nullable();
+            $table->string("picture",2083)->nullable();
         });
     }
 
@@ -26,7 +26,7 @@ class AddPictureToTags extends Migration
     public function down()
     {
         Schema::table('tags', function (Blueprint $table) {
-            $table->dropColumn("path");
+            $table->dropColumn("picture");
         });
     }
 }
