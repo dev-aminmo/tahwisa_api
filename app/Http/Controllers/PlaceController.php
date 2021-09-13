@@ -158,11 +158,12 @@ class PlaceController extends Controller
        });
        }
        if(request('rating_min')) {
-           $query->whereHas('reviews',  function ($query){
+          if (request('rating_min')>0) $query->whereHas('reviews',  function ($query){
                $query->where('vote', '>=', request('rating_min'));
            });
        }
        if(request('rating_max')) {
+           if (request('rating_max')<5)
            $query->whereHas('reviews',  function ($query){
                $query->where('vote', '<=', request('rating_max'));
            });
