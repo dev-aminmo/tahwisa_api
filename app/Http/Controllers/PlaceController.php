@@ -158,16 +158,29 @@ class PlaceController extends Controller
        });
        }
        if(request('rating_min')) {
-          if (request('rating_min')>0) $query->whereHas('reviews',  function ($query){
+           if (request('rating_min')>0){
+               $query->whereHas('reviews',  function ($query){
                $query->where('vote', '>=', request('rating_min'));
-           });
+           });}
        }
        if(request('rating_max')) {
-           if (request('rating_max')<5)
-           $query->whereHas('reviews',  function ($query){
-               $query->where('vote', '<=', request('rating_max'));
-           });
+           if (request('rating_max')<5){
+               if (request('rating_min')>0){
+                   $query->whereHas('reviews',  function ($query){
+                   $query->where('vote', '<=', request('rating_max'));
+               });}
+               else{
+                   $query  ->where(function($query){
+                       $query->whereHas('reviews',  function ($query){
+                           $query->where('vote', '<=', request('rating_max'));
+                       })->orWhereDoesntHave('reviews');
+                   })->get();
+
+               }
+           }
        }
+
+
        if(request('municipal')) {
            $query->where('municipal_id', request('municipal'));
        }else if(request('state')){
@@ -177,7 +190,7 @@ class PlaceController extends Controller
                });
            });
        }
-      $data=$query->paginate(2);
+      $data=$query->paginate(10);
        return $this->returnDataResponse( $data);
    }
 }
