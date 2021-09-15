@@ -94,7 +94,9 @@ class PlaceController extends Controller
                   'path',
                   'place_id'
               );
-          }])->withAvg('reviews','vote')->paginate(10);
+          }])->withAvg('reviews','vote')->withCount('reviews')->with(['user'=>function($query){
+              $query->select(['id','username','profile_picture']);
+         }])->paginate(10);
        return response()->json($places,200);
    }
    public function  get(Request $request){
