@@ -15,6 +15,7 @@ class Place extends Model
     use Searchable;
     public $timestamps = false;
     protected $hidden = ['laravel_through_key'];
+    protected $appends=['wished'];
 
 
     protected $fillable = [
@@ -56,9 +57,17 @@ class Place extends Model
         return $this->hasMany(Review::class,'place_id');
     }
 
-    public function wishes()
+    public function getWishedAttribute()
     {
-        return $this->hasMany(WishListItem::class,'place_id');
+
+      $user_id=  auth()->user()->id;
+       $place_id=$this->attributes['id'];
+
+       $wished=false;
+           if (WishListItem::where([["user_id",$user_id],["place_id",$place_id]])->exists()) {
+          $wished=true;
+           }
+        return $this->attributes['wished'] = $wished;
     }
 
 

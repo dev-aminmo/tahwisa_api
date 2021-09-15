@@ -88,12 +88,13 @@ class PlaceController extends Controller
 
    }
    public function all(Request $request){
+      $user_id= auth()->user()->id;
          $places =Place::has('pictures')->with(['pictures'=> function ($query){
               $query->select(//
                   'path',
                   'place_id'
-              )->limit(1);;
-          }])->withAvg('reviews','vote')->paginate(2);
+              );
+          }])->withAvg('reviews','vote')->paginate(10);
        return response()->json($places,200);
    }
    public function  get(Request $request){
