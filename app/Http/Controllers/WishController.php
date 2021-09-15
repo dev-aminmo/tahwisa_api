@@ -64,15 +64,10 @@ class WishController extends Controller
                   $query->select(//
                       'path',
                       'place_id'
-                  )->limit(1);;
-              }])->withAvg('reviews','vote');
-          }])->paginate(10)->pluck('place')->each(function ($place){
-           $municipal=   $place->municipal_id;
-           $place->municipal=$municipal->name_fr;
-           $place->state=$municipal->state->name_fr;
-           unset($place->municipal_id);
-           return $place;
-          });
+                  );
+              }])->withAvg('reviews','vote')->withCount('reviews')->with(['user'=>function($query){
+                  $query->select(['id','username','profile_picture']);}]);
+          }])->paginate(10)->pluck('place');
 
 
             $data = ['message' => 'success', 'data'=>$data];

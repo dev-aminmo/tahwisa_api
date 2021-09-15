@@ -193,7 +193,14 @@ class PlaceController extends Controller
                });
            });
        }
-      $data=$query->paginate(10);
+       $data=  $query->with(['pictures'=> function ($query){
+           $query->select(//
+               'path',
+               'place_id'
+           );
+       }])->withAvg('reviews','vote')->withCount('reviews')->with(['user'=>function($query){
+           $query->select(['id','username','profile_picture']);}])->paginate(10);
+   //   $data=$query->paginate(10);
        return $this->returnDataResponse( $data);
    }
 }

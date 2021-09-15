@@ -59,10 +59,8 @@ class Place extends Model
 
     public function getWishedAttribute()
     {
-
       $user_id=  auth()->user()->id;
-       $place_id=$this->attributes['id'];
-
+      $place_id=$this->attributes['id'];
        $wished=false;
            if (WishListItem::where([["user_id",$user_id],["place_id",$place_id]])->exists()) {
           $wished=true;
@@ -70,11 +68,6 @@ class Place extends Model
         return $this->attributes['wished'] = $wished;
     }
 
-
-    /*public function tags()
-    {
-        return $this->hasMany(PlaceTag::class,'place_id');
-    }*/
     public function tags()
     {
         return $this->hasManyThrough(Tag::class, PlaceTag::class,
