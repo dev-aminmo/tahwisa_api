@@ -65,11 +65,11 @@ class WishController extends Controller
                       'path',
                       'place_id'
                   );
+              }])->with(['tags'=>function($query){
+                  $query->select(['tag_id','name']);
               }])->withAvg('reviews','vote')->withCount('reviews')->with(['user'=>function($query){
                   $query->select(['id','username','profile_picture']);}]);
           }])->paginate(10)->pluck('place');
-
-
             $data = ['message' => 'success', 'data'=>$data];
             return Response()->json($data,200);
 

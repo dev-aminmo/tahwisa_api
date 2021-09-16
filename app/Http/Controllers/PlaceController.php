@@ -89,17 +89,19 @@ class PlaceController extends Controller
    }
    public function all(Request $request){
       $user_id= auth()->user()->id;
-         $places =Place::has('pictures')->with(['pictures'=> function ($query){
-              $query->select(//
+         $places =Place::whereHas('pictures')->with(['pictures'=> function ($query){
+              $query->select(
                   'path',
                   'place_id'
               );
-          }])->withAvg('reviews','vote')->withCount('reviews')->with(['user'=>function($query){
+          }])->with(['tags'=>function($query){
+              $query->select(['tag_id','name']);
+         }])->withAvg('reviews','vote')->withCount('reviews')->with(['user'=>function($query){
               $query->select(['id','username','profile_picture']);
          }])->paginate(10);
        return response()->json($places,200);
    }
-   public function  get(Request $request){
+   public function get(Request $request){
        $id = Route::current()->parameter('id');
        try{
            $place =Place::where('id',$id)->with(['pictures'])->withAvg('reviews','vote')->withCount('reviews')->with(['user'=> function ($query) {
@@ -133,10 +135,12 @@ class PlaceController extends Controller
    }*/
       public function autocomplete(Request $request){
        $keyword = $request->get( 'query');
-       $places= Place::where(function ($query) use($keyword) {
+       $places= Place::whereHas('pictures')->where(function ($query) use($keyword) {
            $query->where('title', 'like', '%' . $keyword . '%')
                ->orWhere('description', 'like', '%' . $keyword . '%');
-       })->select(['id','title','description'])->get()->append("model");
+       })->select(['id','title','description'])->with(['tags'=>function($query){
+           $query->select(['tag_id','name']);
+       }])->get()->append("model");
        $tags= Tag::where('name', 'like', '%' . $keyword . '%')->get()->append("model");
      $data=  $tags->toBase()->merge($places);
 
@@ -146,13 +150,13 @@ class PlaceController extends Controller
        $keyword = $request->get( 'query');
        $query=null;
        if(request('tag')) {
-           $query=   Place::where(function ($query){
+           $query=   Place::whereHas('pictures')->where(function ($query){
                $query->whereHas('tags', function ($query){
                        $query->where('tag_id',request('tag'));
                    });
            });
        }else{
-           $query=   Place::where(function ($query) use($keyword) {
+           $query=   Place::whereHas('pictures')->where(function ($query) use($keyword) {
            $query->where('title', 'like', '%' . $keyword . '%')
                ->orWhere('description', 'like', '%' . $keyword . '%')
                ->orWhereHas('tags', function ($query) use ($keyword){
@@ -198,7 +202,9 @@ class PlaceController extends Controller
                'path',
                'place_id'
            );
-       }])->withAvg('reviews','vote')->withCount('reviews')->with(['user'=>function($query){
+       }])->withAvg('reviews','vote')->withCount('reviews')->with(['tags'=>function($query){
+           $query->select(['tag_id','name']);
+       }])->with(['user'=>function($query){
            $query->select(['id','username','profile_picture']);}])->paginate(10);
    //   $data=$query->paginate(10);
        return $this->returnDataResponse( $data);
