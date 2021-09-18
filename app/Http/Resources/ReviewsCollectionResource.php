@@ -20,8 +20,7 @@ class ReviewsCollectionResource extends ResourceCollection
             'per_page' => $this->perPage(),
             'current_page' => $this->currentPage(),
             'total_pages' => $this->lastPage(),
-            "user_review" => new ReviewsResource($this->collection->where('user_id', '1')->first()),
-            "all_reviews" => ReviewsResource::collection($this->collection),
+            "reviews" => ReviewsResource::collection($this->collection),
         ];
     }
 }

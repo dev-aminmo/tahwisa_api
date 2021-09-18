@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ReviewsCollectionResource;
+use App\Http\Resources\ReviewsResource;
 use App\Models\Place;
 use App\Models\Review;
 use Carbon\Carbon;
@@ -17,6 +18,13 @@ class ReviewController extends Controller
         $reviews = Review::where('place_id', $place->id)->orderBy('id', 'DESC')->paginate(5);
         $data = new ReviewsCollectionResource($reviews);
         return Response()->json(['The list of reviews of this place' => $data], 200);
+    }
+
+    public function userReview(Place $place,Request $request)
+    {
+        $reviews = Review::where([['place_id','=', $place->id] , ['user_id','=', $request->user()->id]] )->first();
+        $data = new ReviewsResource($reviews);
+        return Response()->json(['User review of this place' => $data], 200);
     }
 
     function create(Request $request)

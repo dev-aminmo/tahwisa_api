@@ -45,10 +45,10 @@ Route::middleware('auth:api')->group(function (){
 
     Route::group(['prefix'=>'/reviews'],function(){
         Route::get("{place}",[ReviewController::class,"index"]);
+        Route::get("user/{place}",[ReviewController::class,"userReview"]);
         Route::post("create",[ReviewController::class,"create"]);
         Route::post("update/{review}",[ReviewController::class,"update"]);
         Route::post("delete/{review}",[ReviewController::class,"delete"]);
-
     });
 
     // --------------------- END REVIEWS ROUTES ---------------------
