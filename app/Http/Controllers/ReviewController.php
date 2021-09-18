@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\MyResponse;
 use App\Http\Resources\ReviewsCollectionResource;
 use App\Http\Resources\ReviewsResource;
 use App\Models\Place;
@@ -13,18 +14,20 @@ use Validator;
 
 class ReviewController extends Controller
 {
+    use MyResponse;
     public function index(Place $place)
     {
         $reviews = Review::where('place_id', $place->id)->orderBy('id', 'DESC')->paginate(5);
         $data = new ReviewsCollectionResource($reviews);
-        return Response()->json(['The list of reviews of this place' => $data], 200);
+        return $this->returnDataResponse($data);
     }
 
     public function userReview(Place $place,Request $request)
     {
         $reviews = Review::where([['place_id','=', $place->id] , ['user_id','=', $request->user()->id]] )->first();
         $data = new ReviewsResource($reviews);
-        return Response()->json(['User review of this place' => $data], 200);
+       return $this->returnDataResponse($data);
+
     }
 
     function create(Request $request)
@@ -56,9 +59,9 @@ class ReviewController extends Controller
         });
 
         if ($transactionResponse == 'succes')
-            return Response()->json(['message' => 'review inserted successfully'], 200);
+            return $this->returnSuccessResponse( 'review inserted successfully');
         else
-            return Response()->json(['message' => 'error, review not inserted'], 500);
+            return $this->returnErrorResponse('error, review not inserted',500);
     }
 
     function update(Request $request, Review $review)
@@ -82,15 +85,18 @@ class ReviewController extends Controller
         });
 
         if ($transactionResponse == 'succes')
-            return Response()->json(['message' => 'review updated successfully'], 200);
+            return $this->returnSuccessResponse( 'review updated successfully');
+
         else
-            return Response()->json(['message' => 'error, review not updated'], 500);
+            return $this->returnErrorResponse('error, review not updated',500);
+
     }
 
     public function delete(Review $review)
     {
         $status = $review->delete();
         if ($status == '1')
+
             return Response()->json(['message' => 'review deleted successfully'], 200);
         else
             return Response()->json(['message' => 'error, review not deleted'], 500);
