@@ -17,7 +17,7 @@ class ReviewController extends Controller
     use MyResponse;
     public function index(Place $place)
     {
-        $reviews = Review::where('place_id', $place->id)->orderBy('id', 'DESC')->paginate(5);
+        $reviews = Review::where('place_id', $place->id)->orderBy('id', 'DESC')->paginate(10);
         $data = new ReviewsCollectionResource($reviews);
         return $this->returnDataResponse($data);
     }
@@ -26,7 +26,8 @@ class ReviewController extends Controller
     {
         $reviews = Review::where([['place_id','=', $place->id] , ['user_id','=', $request->user()->id]] )->first();
         if(!$reviews)
-        return Response()->json(['User do not have a review yet'], 200);
+            return $this->returnDataResponse(null);
+
 
         $data = new ReviewsResource($reviews);
        return $this->returnDataResponse($data);
