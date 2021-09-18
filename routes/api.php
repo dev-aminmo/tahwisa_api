@@ -40,11 +40,19 @@ Route::middleware('auth:api')->group(function (){
         Route::post("/logout",[UserController::class,"logout"]);
         //Route::post("add",[ReviewController::class,"addReview"]);
     });
-    Route::group(['prefix'=>'/review'],function(){
-        Route::post("add",[ReviewController::class,"addReview"]);
-        Route::get("{id}",[ReviewController::class,"get"]);
+
+    // --------------------- REVIEWS ROUTES ---------------------
+
+    Route::group(['prefix'=>'/reviews'],function(){
+        Route::get("{place}",[ReviewController::class,"index"]);
+        Route::post("create",[ReviewController::class,"create"]);
+        Route::post("update/{review}",[ReviewController::class,"update"]);
+        Route::post("delete/{review}",[ReviewController::class,"delete"]);
 
     });
+
+    // --------------------- END REVIEWS ROUTES ---------------------
+
     Route::group(['prefix'=>'/place'],function(){
         Route::post("add",[PlaceController::class,"addPlace"]);
         Route::put("updateinfo/{id}",[PlaceController::class,"updatePlaceInfo"]);
