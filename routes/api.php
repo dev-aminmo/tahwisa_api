@@ -48,7 +48,7 @@ Route::middleware('auth:api')->group(function (){
         Route::get("user/{place}",[ReviewController::class,"userReview"]);
         Route::post("create",[ReviewController::class,"create"]);
         Route::post("update/{review}",[ReviewController::class,"update"]);
-        Route::post("delete/{review}",[ReviewController::class,"delete"]);
+        Route::delete("delete/{review}",[ReviewController::class,"delete"]);
     });
 
     // --------------------- END REVIEWS ROUTES ---------------------
