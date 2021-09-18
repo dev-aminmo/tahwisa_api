@@ -25,6 +25,9 @@ class ReviewController extends Controller
     public function userReview(Place $place,Request $request)
     {
         $reviews = Review::where([['place_id','=', $place->id] , ['user_id','=', $request->user()->id]] )->first();
+        if(!$reviews)
+        return Response()->json(['User do not have a review yet'], 200);
+
         $data = new ReviewsResource($reviews);
        return $this->returnDataResponse($data);
 
