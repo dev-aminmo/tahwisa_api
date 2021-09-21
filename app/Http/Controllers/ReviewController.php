@@ -37,7 +37,7 @@ class ReviewController extends Controller
     {
         $validation = Validator::make($request->all(), [
             'vote'  => 'required|numeric|min:0|max:5',
-            'comment' => 'required|string',
+            'comment' => 'string',
             'place_id' => 'required',
         ]);
         if ($validation->fails())
