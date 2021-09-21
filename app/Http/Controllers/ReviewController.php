@@ -107,10 +107,13 @@ class ReviewController extends Controller
 
     public function delete(Review $review)
     {
-        $status = $review->delete();
+        $status=null;
+        if($review->user->id ==auth()->user()->id){
+            $status = $review->delete();
+        }
         if ($status == '1')
 
-            return Response()->json(['message' => 'review deleted successfully'], 200);
+            return Response()->json(['message' => 'review deleted successfully'], 201);
         else
             return Response()->json(['message' => 'error, review not deleted'], 500);
     }
