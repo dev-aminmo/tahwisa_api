@@ -24,7 +24,7 @@ class ReviewController extends Controller
 
     public function userReview(Place $place,Request $request)
     {
-        $reviews = Review::where([['place_id','=', $place->id] , ['user_id','=', $request->user()->id]] )->first();
+        $reviews = Review::where([['place_id','=', $place->id] , ['user_id','=', $request->user()->id]] )->with('user')->first();
         if(!$reviews)
             return $this->returnDataResponse(null);
 
@@ -37,7 +37,7 @@ class ReviewController extends Controller
     {
         $validation = Validator::make($request->all(), [
             'vote'  => 'required|numeric|min:0|max:5',
-            'comment' => 'string',
+            'comment' => 'nullable|string',
             'place_id' => 'required',
         ]);
         if ($validation->fails())

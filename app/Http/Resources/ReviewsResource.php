@@ -19,7 +19,7 @@ class ReviewsResource extends JsonResource
             'vote' => $this->vote,
             'comment' => $this->comment,
             'place_id' => $this->place_id,
-            'user_id' => $this->user_id,
+            'user' => $this->user,
             'created_at' => date('Y-m-d H:i', strtotime($this->created_at)),
             'updated_at' => date('Y-m-d H:i', strtotime($this->updated_at)),
         ];
