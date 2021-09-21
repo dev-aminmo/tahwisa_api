@@ -17,7 +17,7 @@ class ReviewController extends Controller
     use MyResponse;
     public function index(Place $place)
     {
-        $reviews = Review::where('place_id', $place->id)->orderBy('id', 'DESC')->paginate(10);
+        $reviews = Review::where('place_id', $place->id)->with('user')->orderBy('id', 'DESC')->paginate(10);
         $data = new ReviewsCollectionResource($reviews);
         return $this->returnDataResponse($data);
     }
