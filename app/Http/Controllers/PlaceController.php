@@ -118,21 +118,7 @@ class PlaceController extends Controller
        }
 
    }
-   /*public function autocomplete(Request $request){
-       $keyword = $request->get( 'query');
-       $places= Place::where(function ($query) use($keyword) {
-           $query->where('title', 'like', '%' . $keyword . '%')
-               ->orWhere('description', 'like', '%' . $keyword . '%')
-               ->orWhereHas('tags', function ($query) use ($keyword){
-                   $query->where('name', 'like', '%'.$keyword.'%');
-               });
 
-       })->select(['id','title','description'])->get()->append("model");
-     //  $tags= Tag::where('name', 'like', '%' . $keyword . '%')->get()->append("model");
-    // $data=  $tags->toBase()->merge($places);
-
-       return $this->returnDataResponse($places);
-   }*/
       public function autocomplete(Request $request){
        $keyword = $request->get( 'query');
        $places= Place::whereHas('pictures')->where(function ($query) use($keyword) {
@@ -206,7 +192,7 @@ class PlaceController extends Controller
            $query->select(['tag_id','name']);
        }])->with(['user'=>function($query){
            $query->select(['id','username','profile_picture']);}])->paginate(10);
-   //   $data=$query->paginate(10);
+
        return $this->returnDataResponse( $data);
    }
 }

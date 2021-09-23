@@ -26,12 +26,7 @@ Route::group([
 ], function () {
     Route::post('create', [PasswordResetController::class,"create"]);
 });
-Route::group([
-    'middleware' => 'api',
-], function () {
-    Route::get("/place/autocomplete",[PlaceController::class,"autocomplete"]);
 
-});
 
 Route::middleware('auth:api')->group(function (){
     Route::group(['prefix'=>'/user'],function(){
@@ -58,7 +53,7 @@ Route::middleware('auth:api')->group(function (){
         Route::put("updateinfo/{id}",[PlaceController::class,"updatePlaceInfo"]);
         Route::get("all",[PlaceController::class,"all"]);
         Route::get("search",[PlaceController::class,"search"]);
-
+        Route::get("autocomplete",[PlaceController::class,"autocomplete"]);
         Route::get("{id}",[PlaceController::class,"get"]);
 
 

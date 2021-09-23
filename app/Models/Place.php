@@ -36,10 +36,7 @@ class Place extends Model
     {
         return $this->hasMany(PlacePicture::class,'place_id');
     }
-   /* public function tags()
-    {
-        return $this->belongsToMany(Tag::class);
-    }*/
+
     public function getMunicipalIdAttribute($value)
     {
         return Municipal::where("id",$value)->select("id","name_fr","state_id")->with(["state"=>function($query){
@@ -74,26 +71,9 @@ class Place extends Model
                  'place_id', // Foreign key on the environments table...
             'id', // Foreign key on the deployments table...
             'id', // Local key on the projects table...
-            'id' // Local key on the environments table...
+            'tag_id' // Local key on the environments table...
         );
     }
-
-    public function toSearchableArray() {
-       // $a = $this->toArray();
-        $tags = $this->tags()->get(['name'])->map( function ($tag) {
-            return $tag['name'];
-        });
-        $a['tags'] = implode(' ', $tags->toArray());
-       // return $a;
-        return [
-            'id' => $this->id,
-            'title' => $this->title,
-            'description' => $this->description,
-          'tags'=> $a['tags'],
-           // 'path' => $this->ancestorsAndSelf->pluck('objectable.name')->reverse()->join('/'),
-        ];
-    }
-
 
 
     public static  function add($jsonData,$files,$id){
