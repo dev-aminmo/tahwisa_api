@@ -49,6 +49,7 @@ Route::middleware('auth:api')->group(function (){
     // --------------------- END REVIEWS ROUTES ---------------------
 
     Route::group(['prefix'=>'/place'],function(){
+        Route::get("{place}",[PlaceController::class,"index"]);
         Route::post("add",[PlaceController::class,"addPlace"]);
         Route::put("updateinfo/{id}",[PlaceController::class,"updatePlaceInfo"]);
         Route::get("all",[PlaceController::class,"all"]);

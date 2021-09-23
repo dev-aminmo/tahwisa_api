@@ -18,6 +18,19 @@ use Illuminate\Support\Facades\Route;
 class PlaceController extends Controller
 {
     use MyResponse;
+    public function index(Place $place)
+    {
+        $place = Place::where('id',$place->id)->with(['pictures'=> function ($query){
+            $query->select(//
+                'path',
+                'place_id'
+            );
+        }])->withAvg('reviews','vote')->withCount('reviews')->with(['tags'=>function($query){
+            $query->select(['tag_id','name']);
+        }])->with(['user'=>function($query){
+            $query->select(['id','username','profile_picture']);}])->get();
+        return $this->returnDataResponse($place);
+    }
    public function addPlace(Request $request){
 
 
