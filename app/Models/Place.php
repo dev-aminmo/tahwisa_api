@@ -43,6 +43,13 @@ class Place extends Model
             $query->select("id","name_fr");
         }])->first();
     }
+    public function getLatitudeAttribute($value)
+    {
+      return (float) $value;
+    }   public function getLongitudeAttribute($value)
+    {
+      return (float) $value;
+    }
         public function getModelAttribute()
     {
 
