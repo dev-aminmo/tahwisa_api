@@ -107,10 +107,9 @@ class Place extends Model
             DB::table('places_pictures')->insert([
                 'path'=>$arg['path'], 'place_id'=>$placeid
             ]);
-
         }
 
-        foreach($tags as $tag){
+       foreach($tags as $tag){
             if($tag->id){
                 PlaceTag::create([
                     'tag_id' => $tag->id,
