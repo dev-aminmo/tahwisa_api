@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Models\Place;
 use App\Models\Review;
 use App\Models\PlacePicture;
+use App\Models\PlaceTag;
 use Illuminate\Support\Facades\DB;
 use Validator;
 use Illuminate\Support\Facades\Route;
@@ -62,8 +63,9 @@ class PlaceController extends Controller
            return response()->json($validation->errors(), 202);
        }
        $id= auth()->user()['id'];
+       $tags = $request->data->tags;
        try{
-           Place::add($jsonData,$request->file('file'),$id);
+           Place::add($jsonData,$request->file('file'),$tags,$id);
            $data = ['message' => 'place inserted successfully','code'=>201];
            return Response()->json($data,201);
        }catch (Exception $exception){

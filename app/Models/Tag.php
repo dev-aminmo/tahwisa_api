@@ -11,7 +11,7 @@ class Tag extends Model
     use HasFactory;
     use Searchable;
 
-    protected $fillable =[""];
+    protected $fillable =['id', 'name'];
     public $timestamps=false;
 
     protected $hidden = ['laravel_through_key'];

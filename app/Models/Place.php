@@ -83,7 +83,7 @@ class Place extends Model
     }
 
 
-    public static  function add($jsonData,$files,$id){
+    public static  function add($jsonData,$files,$tags,$id){
         $placeid=  DB::table('places')->insertGetId([
             'title'=>$jsonData["title"],
             'description'=>$jsonData["description"],
@@ -108,6 +108,24 @@ class Place extends Model
                 'path'=>$arg['path'], 'place_id'=>$placeid
             ]);
 
+        }
+
+        foreach($tags as $tag){
+            if($tag->id){
+                PlaceTag::create([
+                    'tag_id' => $tag->id,
+                    'place_id' => $placeid,
+                ]);
+            } elseif($tag->name) {
+                $newTag = Tag::create([
+                 'id' => $tag->id,
+                 'name' => $tag->name,
+                ]);
+                PlaceTag::create([
+                 'tag_id' => $newTag->id,
+                 'place_id' => $placeid,
+             ]);
+            }
         }
         /*DB::transaction(function () use ($params){
           $id=  DB::table('places')->insertGetId([
