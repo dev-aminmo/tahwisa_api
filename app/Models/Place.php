@@ -6,13 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use App\Models\PlacePicture;
-use Laravel\Scout\Searchable;
 
 class Place extends Model
 {
     use \Staudenmeir\EloquentEagerLimit\HasEagerLimit;
     use HasFactory;
-    use Searchable;
     public $timestamps = false;
     protected $hidden = ['laravel_through_key'];
     protected $appends = ['wished'];
@@ -80,10 +78,10 @@ class Place extends Model
         return $this->hasManyThrough(
             Tag::class,
             PlaceTag::class,
-            'place_id', // Foreign key on the environments table...
-            'id', // Foreign key on the deployments table...
-            'id', // Local key on the projects table...
-            'tag_id' // Local key on the environments table...
+            'place_id',
+            'id',
+            'id',
+            'tag_id'
         );
     }
 
@@ -113,40 +111,22 @@ class Place extends Model
                 'path' => $arg['path'], 'place_id' => $placeid
             ]);
         }
+
         foreach ($tags as $tag) {
-            if ($tag['id'] <> '0') {
+            if (array_key_exists('id',$tag)) {
                 PlaceTag::create([
                     'tag_id' => $tag['id'],
                     'place_id' => $placeid,
                 ]);
-            } elseif ($tag['name']) {
+            } elseif (array_key_exists('name',$tag)) {
                 $newTag = Tag::create([
                     'name' => $tag['name'],
                 ]);
-                $p =PlaceTag::create([
+                PlaceTag::create([
                     'tag_id' => $newTag->id,
                     'place_id' => $placeid,
                 ]);
             }
         }
-        /*DB::transaction(function () use ($params){
-          $id=  DB::table('places')->insertGetId([
-                'title'=>$params["title"],
-                'description'=>$params["description"],
-                'latitude'=>$params["latitude"],
-                'longitude'=>$params["longitude"],
-                'user_id'=>$params["user_id"],
-            ]);
-            $pictures=$params['pictures'];
-            foreach ($pictures as $k=> $picture){
-                $arg=[];
-                $arg['path']=$picture;
-                DB::table('places_pictures')->insert([
-                'path'=>$arg['path'], 'place_id'=>$id
-                ]);
-
-            }
-
-        });*/
     }
 }
