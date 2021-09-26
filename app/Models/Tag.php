@@ -37,5 +37,7 @@ class Tag extends Model
 
         return  $this->model="tag";
     }
-
+    public function tags(){
+        return $this->hasMany(PlaceTag::class,"tag_id");
+    }
 }

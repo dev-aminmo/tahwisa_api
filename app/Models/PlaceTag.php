@@ -10,6 +10,7 @@ class PlaceTag extends Model
     use HasFactory;
     protected $table ="place_tag";
     protected $fillable = ['place_id', 'tag_id'];
+    public $timestamps=false;
 
 
     public function tag(){

@@ -5,13 +5,8 @@ namespace App\Http\Controllers;
 use App\Helpers\MyResponse;
 use App\Models\Tag;
 use Exception;
-use http\Env\Response;
 use Illuminate\Http\Request;
 use App\Models\Place;
-use App\Models\Review;
-use App\Models\PlacePicture;
-use App\Models\PlaceTag;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Route;
 
@@ -51,29 +46,29 @@ class PlaceController extends Controller
        }
        $jsonData=$request->get("data");
        if(!is_array($jsonData)) $jsonData= json_decode($request->get("data"),true);
+       $validation = Validator::make($jsonData, [
+           'title'  => 'required|string',
+           'description'=>'string',
+           'latitude'=> 'required|numeric',
+           'longitude'=> 'required|numeric',
+           'municipal_id'=>'required|numeric',
+       ]);
 
-            $validation = Validator::make($jsonData, [
-                'title'  => 'required|string',
-                'description'=>'string',
-                'latitude'=> 'required|numeric',
-                'longitude'=> 'required|numeric',
-                'municipal_id'=>'required|numeric',
-            ]);
-
-            if ($validation->fails()) {
-                return response()->json($validation->errors(), 202);
-            }
+       if ($validation->fails()) {
+           return response()->json($validation->errors(), 202);
+       }
        $id= auth()->user()['id'];
        $tags = $jsonData['tags'];
 
        try{
-           Place::add($jsonData,$request->file('file'),$tags,$id);
+           $place = Place::add($jsonData,$request->file('file'),$tags,$id);
+           return $place;
            $data = ['message' => 'place inserted successfully','code'=>201];
            return Response()->json($data,201);
        }catch (Exception $exception){
            $response=[];
            $response['error']="an error has occured";
-           return response()->json($response, 400);
+           return response()->json($exception, 400);
        }
    }
    public function updatePlaceInfo(Request $request){

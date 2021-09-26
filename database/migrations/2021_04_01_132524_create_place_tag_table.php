@@ -14,7 +14,6 @@ class CreatePlaceTagTable extends Migration
     public function up()
     {
         Schema::create('place_tag', function (Blueprint $table) {
-
             $table->id();
             $table->bigInteger('place_id')->unsigned();
             $table->bigInteger('tag_id')->unsigned();

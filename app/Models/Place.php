@@ -15,7 +15,7 @@ class Place extends Model
     use Searchable;
     public $timestamps = false;
     protected $hidden = ['laravel_through_key'];
-    protected $appends=['wished'];
+    protected $appends = ['wished'];
 
 
     protected $fillable = [
@@ -26,56 +26,61 @@ class Place extends Model
         'user_id',
         'municipal_id'
     ];
-    public function user(){
-        return $this->belongsTo(User::class,'user_id');
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
-    public function municipal(){
-        return $this->belongsTo(Municipal::class,'municipal_id');
+    public function municipal()
+    {
+        return $this->belongsTo(Municipal::class, 'municipal_id');
     }
     public function pictures()
     {
-        return $this->hasMany(PlacePicture::class,'place_id');
+        return $this->hasMany(PlacePicture::class, 'place_id');
     }
 
     public function getMunicipalIdAttribute($value)
     {
-        return Municipal::where("id",$value)->select("id","name_fr","state_id")->with(["state"=>function($query){
-            $query->select("id","name_fr");
+        return Municipal::where("id", $value)->select("id", "name_fr", "state_id")->with(["state" => function ($query) {
+            $query->select("id", "name_fr");
         }])->first();
     }
     public function getLatitudeAttribute($value)
     {
-      return (float) $value;
-    }   public function getLongitudeAttribute($value)
-    {
-      return (float) $value;
+        return (float) $value;
     }
-        public function getModelAttribute()
+    public function getLongitudeAttribute($value)
+    {
+        return (float) $value;
+    }
+    public function getModelAttribute()
     {
 
-        return  $this->model="place";
+        return  $this->model = "place";
     }
 
     public function reviews()
     {
-        return $this->hasMany(Review::class,'place_id');
+        return $this->hasMany(Review::class, 'place_id');
     }
 
     public function getWishedAttribute()
     {
-      $user_id=  auth()->user()->id;
-      $place_id=$this->attributes['id'];
-       $wished=false;
-           if (WishListItem::where([["user_id",$user_id],["place_id",$place_id]])->exists()) {
-          $wished=true;
-           }
+        $user_id =  auth()->user()->id;
+        $place_id = $this->attributes['id'];
+        $wished = false;
+        if (WishListItem::where([["user_id", $user_id], ["place_id", $place_id]])->exists()) {
+            $wished = true;
+        }
         return $this->attributes['wished'] = $wished;
     }
 
     public function tags()
     {
-        return $this->hasManyThrough(Tag::class, PlaceTag::class,
-                 'place_id', // Foreign key on the environments table...
+        return $this->hasManyThrough(
+            Tag::class,
+            PlaceTag::class,
+            'place_id', // Foreign key on the environments table...
             'id', // Foreign key on the deployments table...
             'id', // Local key on the projects table...
             'tag_id' // Local key on the environments table...
@@ -83,47 +88,45 @@ class Place extends Model
     }
 
 
-    public static  function add($jsonData,$files,$tags,$id){
-        $placeid=  DB::table('places')->insertGetId([
-            'title'=>$jsonData["title"],
-            'description'=>$jsonData["description"],
-            'latitude'=>$jsonData["latitude"],
-            'longitude'=>$jsonData["longitude"],
-            'user_id'=>$id,
-            'municipal_id'=>$jsonData["municipal_id"]
+    public static  function add($jsonData, $files, $tags, $id)
+    {
+        $placeid =  DB::table('places')->insertGetId([
+            'title' => $jsonData["title"],
+            'description' => $jsonData["description"],
+            'latitude' => $jsonData["latitude"],
+            'longitude' => $jsonData["longitude"],
+            'user_id' => $id,
+            'municipal_id' => $jsonData["municipal_id"]
         ]);
 
-        $pictures=[];
-        foreach($files as $file)
-        {
-            $pictures[] = cloudinary()->upload($file->getRealPath(),[
-                'folder'=> 'tahwisa/places/'.$placeid.'/',
-                'format'=>"webp",
+        $pictures = [];
+        foreach ($files as $file) {
+            $pictures[] = cloudinary()->upload($file->getRealPath(), [
+                'folder' => 'tahwisa/places/' . $placeid . '/',
+                'format' => "webp",
             ])->getSecurePath();
         }
-        foreach ($pictures as $k=> $picture){
-            $arg=[];
-            $arg['path']=$picture;
+        foreach ($pictures as $k => $picture) {
+            $arg = [];
+            $arg['path'] = $picture;
             DB::table('places_pictures')->insert([
-                'path'=>$arg['path'], 'place_id'=>$placeid
+                'path' => $arg['path'], 'place_id' => $placeid
             ]);
         }
-
-       foreach($tags as $tag){
-            if($tag->id){
+        foreach ($tags as $tag) {
+            if ($tag['id'] <> '0') {
                 PlaceTag::create([
-                    'tag_id' => $tag->id,
+                    'tag_id' => $tag['id'],
                     'place_id' => $placeid,
                 ]);
-            } elseif($tag->name) {
+            } elseif ($tag['name']) {
                 $newTag = Tag::create([
-                 'id' => $tag->id,
-                 'name' => $tag->name,
+                    'name' => $tag['name'],
                 ]);
-                PlaceTag::create([
-                 'tag_id' => $newTag->id,
-                 'place_id' => $placeid,
-             ]);
+                $p =PlaceTag::create([
+                    'tag_id' => $newTag->id,
+                    'place_id' => $placeid,
+                ]);
             }
         }
         /*DB::transaction(function () use ($params){
@@ -146,5 +149,4 @@ class Place extends Model
 
         });*/
     }
-
 }
