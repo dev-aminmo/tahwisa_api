@@ -62,7 +62,7 @@ class UserController extends Controller
         if($deatails['profile_picture']==""){
             $deatails['profile_picture']="place_holder.jpg" ;
         }
-        return response()->json(['user'=> $deatails],200);
+        return response()->json(['data'=> $deatails],200);
     }
     public function updateProfilePicture(Request $request){
      try{

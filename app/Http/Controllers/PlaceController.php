@@ -50,8 +50,8 @@ class PlaceController extends Controller
         $jsonData = $request->get("data");
         if (!is_array($jsonData)) $jsonData = json_decode($request->get("data"), true);
         $validation = Validator::make($jsonData, [
-            'title'  => 'required|string',
-            'description' => 'string',
+            'title'  => 'required|string|max:191',
+            'description' => 'string|max:2000',
             'latitude' => 'required|numeric',
             'longitude' => 'required|numeric',
             'municipal_id' => 'required|numeric',
@@ -68,12 +68,9 @@ class PlaceController extends Controller
 
         try {
             Place::add($jsonData, $request->file('file'), $tags, $id);
-            $data = ['message' => 'place inserted successfully', 'code' => 201];
-            return Response()->json($data, 201);
+            return $this->returnSuccessResponse('place inserted successfully');
         } catch (Exception $exception) {
-            $response = [];
-            $response['error'] = "an error has occured";
-            return response()->json($exception, 400);
+            return $this->returnErrorResponse();
         }
     }
     public function updatePlaceInfo(Request $request)
