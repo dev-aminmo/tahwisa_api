@@ -119,6 +119,13 @@ class Place extends Model
                     'place_id' => $placeid,
                 ]);
             } elseif (array_key_exists('name',$tag)) {
+               $tagExists =Tag::where('name',$tag['name']) -> first();
+                if($tagExists) {
+                    PlaceTag::create([
+                        'tag_id' => $tagExists->id,
+                        'place_id' => $placeid,
+                    ]);
+                }else{
                 $newTag = Tag::create([
                     'name' => $tag['name'],
                 ]);
@@ -126,6 +133,7 @@ class Place extends Model
                     'tag_id' => $newTag->id,
                     'place_id' => $placeid,
                 ]);
+                }
             }
         }
     }
