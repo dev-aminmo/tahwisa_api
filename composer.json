@@ -22,6 +22,7 @@
         "laravel/passport": "^10.1",
         "laravel/socialite": "^5.2",
         "laravel/tinker": "^2.5",
+        "spatie/image-optimizer": "^1.4",
         "staudenmeir/eloquent-eager-limit": "^1.0"
     },
     "require-dev": {

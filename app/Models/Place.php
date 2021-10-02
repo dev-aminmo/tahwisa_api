@@ -2,10 +2,17 @@
 
 namespace App\Models;
 
+use GuzzleHttp\Client;
+use GuzzleHttp\Pool;
+use GuzzleHttp\Promise\Coroutine;
+use GuzzleHttp\Promise\Create;
+use GuzzleHttp\Promise\Each;
+use GuzzleHttp\Promise\EachPromise;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use App\Models\PlacePicture;
+use Nyholm\Psr7\Request;
 
 class Place extends Model
 {
@@ -86,8 +93,12 @@ class Place extends Model
     }
 
 
-    public static  function add($jsonData, $files, $tags, $id)
+    public static  function add($jsonData, $files, $id)
+
     {
+        set_time_limit(500);
+        $tags = (array_key_exists("tags",$jsonData))?$jsonData['tags']:[];
+
         $placeid =  DB::table('places')->insertGetId([
             'title' => $jsonData["title"],
             'description' => $jsonData["description"],
@@ -96,12 +107,13 @@ class Place extends Model
             'user_id' => $id,
             'municipal_id' => $jsonData["municipal_id"]
         ]);
-
         $pictures = [];
+       $cloudinary= cloudinary();
         foreach ($files as $file) {
-            $pictures[] = cloudinary()->upload($file->getRealPath(), [
+           $pictures[] = $cloudinary->upload($file->getRealPath(), [
                 'folder' => 'tahwisa/places/' . $placeid . '/',
-                'format' => "webp",
+                'quality' => "auto",
+                'fetch_format' => "auto"
             ])->getSecurePath();
         }
         foreach ($pictures as $k => $picture) {

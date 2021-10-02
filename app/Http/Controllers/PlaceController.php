@@ -45,7 +45,7 @@ class PlaceController extends Controller
             ]
         );
         if ($validation->fails()) {
-            return response()->json($validation->errors(), 202);
+            return response()->json($validation->errors(), 422);
         }
         $jsonData = $request->get("data");
         if (!is_array($jsonData)) $jsonData = json_decode($request->get("data"), true);
@@ -59,14 +59,15 @@ class PlaceController extends Controller
             "tags.*.id"=>'integer|distinct|exists:tags,id',
             "tags.*.name"=>'string|distinct',
         ]);
+
+
         if ($validation->fails()) {
             return $this->returnValidationResponse($validation->errors());
         }
         $id = auth()->user()['id'];
-        $tags = $jsonData['tags'];
 
         try {
-            Place::add($jsonData, $request->file('file'), $tags, $id);
+            Place::add($jsonData, $request->file('file'), $id);
             return $this->returnSuccessResponse('place inserted successfully');
         } catch (Exception $exception) {
             return $this->returnErrorResponse($exception->getMessage());
