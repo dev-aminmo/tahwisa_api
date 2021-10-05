@@ -1,12 +1,14 @@
 <?php
 namespace App\Http\Controllers;
+use App\Helpers\MyResponse;
+use App\Models\Place;
 use App\Models\WishListItem;
 use Illuminate\Http\Request;
 use Validator;
 
 class WishController extends Controller
 {
-    //
+    use MyResponse;
     public function add(Request $request){
         $validation = Validator::make($request->all(), [
             'place_id'=> 'required',
@@ -20,39 +22,23 @@ class WishController extends Controller
             $allData['user_id']=$id;
             WishListItem::create($allData);
 
-            $data = ['message' => 'place added to wishlist successfully'];
-            return Response()->json($data,201);
+          return  $this->returnSuccessResponse('place added to wishlist successfully');
 
-        }catch (\Exception $e){
-            $response['error']="an error has occured";
-            return response()->json($response, 400);
-
+       }catch (\Exception $e){
+            return $this->returnErrorResponse();
         }
 
     }
-    public function delete(Request $request){
-        $validation = Validator::make($request->all(), [
-            'place_id'=> 'required',
-        ]);
-        if ($validation->fails()) {
-            return response()->json($validation->errors(), 202);
-        }
-        try{
-            $id= auth()->user()['id'];
-            $allData=$request->all();
-            $allData['user_id']=$id;
-          //  WishListItem::delete($allData);
-            WishListItem::where('user_id',$id)->where('place_id',$allData['place_id'])->delete();
+    public function delete(Place $place){
 
-            $data = ['message' => 'place removed from wishlist successfully'];
-            return Response()->json($data,202);
+        try{
+            $userId= auth()->user()['id'];
+            WishListItem::where('user_id',$userId)->where('place_id',$place->id)->delete();
+            return  $this->returnSuccessResponse('place removed from wishlist successfully',200);
 
         }catch (\Exception $e){
-            $response['error']="an error has occured";
-            return response()->json($response, 400);
-
+            return $this->returnErrorResponse();
         }
-
     }
     public function all(Request $request){
 
@@ -74,7 +60,7 @@ class WishController extends Controller
             return Response()->json($data,200);
 
         }catch (\Exception $e){
-            $response['error']="an error has occured";
+            $response['error']="an error has occurred";
             return response()->json($response, 400);
 
         }
