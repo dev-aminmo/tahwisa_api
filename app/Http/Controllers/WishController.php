@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 use App\Helpers\MyResponse;
+use App\Http\Resources\PlacesCollectionResource;
 use App\Models\Place;
 use App\Models\WishListItem;
 use Illuminate\Http\Request;
@@ -10,6 +11,14 @@ use Validator;
 class WishController extends Controller
 {
     use MyResponse;
+
+    public function index(Request $request){
+        $user_id = $request->user()->id;
+        $places_id = WishListItem::where('user_id', $user_id)->paginate(10);
+        $data = new PlacesCollectionResource($places_id);
+        return $this->returnDataResponse($data);
+    }
+
     public function add(Request $request){
         $validation = Validator::make($request->all(), [
             'place_id'=> 'required',
