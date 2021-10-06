@@ -79,6 +79,11 @@ class Place extends Model
         }
         return $this->attributes['wished'] = $wished;
     }
+    public function wishes()
+    {
+
+        return $this->hasMany(WishListItem::class,'place_id','id');
+    }
 
     public function tags()
     {

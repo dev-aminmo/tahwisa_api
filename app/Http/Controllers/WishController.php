@@ -4,6 +4,7 @@ use App\Helpers\MyResponse;
 use App\Models\Place;
 use App\Models\WishListItem;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Validator;
 
 class WishController extends Controller
@@ -42,8 +43,8 @@ class WishController extends Controller
     }
     public function all(Request $request){
 
-        try{
-            $id= auth()->user()['id'];
+      //  try{
+        $id=auth()->user()->id;
 
           $data=  WishListItem::where('user_id',$id)->with(['place'=>function($query){
               $query->whereHas('pictures')->with(['pictures'=> function ($query){
@@ -55,15 +56,15 @@ class WishController extends Controller
                   $query->select(['tag_id','name']);
               }])->withAvg('reviews','vote')->withCount('reviews')->with(['user'=>function($query){
                   $query->select(['id','username','profile_picture']);}]);
-          }])->paginate(10)->pluck('place');
+          }])->get()->pluck('place')->get()->paginate(10);
             $data = ['message' => 'success', 'data'=>$data];
             return Response()->json($data,200);
 
-        }catch (\Exception $e){
-            $response['error']="an error has occurred";
-            return response()->json($response, 400);
+      //  }catch (\Exception $e){
+       //     $response['error']="an error has occurred";
+       //     return response()->json($response, 400);
 
-        }
+       // }
 
     }
 }
