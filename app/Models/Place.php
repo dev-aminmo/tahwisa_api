@@ -85,6 +85,7 @@ class Place extends Model
         return $this->hasMany(WishListItem::class,'place_id','id');
     }
 
+
     public function tags()
     {
         return $this->hasManyThrough(

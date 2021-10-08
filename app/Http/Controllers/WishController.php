@@ -55,6 +55,7 @@ class WishController extends Controller
       //  try{
         $id=auth()->user()->id;
 
+
           $data=  WishListItem::where('user_id',$id)->with(['place'=>function($query){
               $query->whereHas('pictures')->with(['pictures'=> function ($query){
                   $query->select(//
@@ -65,8 +66,15 @@ class WishController extends Controller
                   $query->select(['tag_id','name']);
               }])->withAvg('reviews','vote')->withCount('reviews')->with(['user'=>function($query){
                   $query->select(['id','username','profile_picture']);}]);
-          }])->get()->pluck('place')->get()->paginate(10);
-            $data = ['message' => 'success', 'data'=>$data];
+          }])->paginate(10);
+        dd($data);
+
+            $final=[
+                'last_page'=>$data['last_page'],
+                'data'=>$data->pluck('place')
+            ];
+            dd($final);
+            $data = ['message' => 'success', 'data'=>$final];
             return Response()->json($data,200);
 
       //  }catch (\Exception $e){

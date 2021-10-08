@@ -8,7 +8,7 @@ trait MyResponse {
         return Response()->json($data,$code);
     }
     public static function returnDataResponse($data,$code=200){
-        return response()->json(["data"=>$data], $code);
+        return response()->json(["data"=>$data,'code'=>$code], $code);
     }
     public static function returnErrorResponse($message="An error has occurred",$code=400){
         return response()->json(["message"=>$message,"code"=>$code], $code);
