@@ -100,7 +100,6 @@ class PlaceController extends Controller
     }
     public function all(Request $request)
     {
-        $user_id = auth()->user()->id;
         $places = Place::whereHas('pictures')->with(['pictures' => function ($query) {
             $query->select(
                 'path',
@@ -111,7 +110,7 @@ class PlaceController extends Controller
         }])->withAvg('reviews', 'vote')->withCount('reviews')->with(['user' => function ($query) {
             $query->select(['id', 'username', 'profile_picture']);
         }])->paginate(10);
-        return response()->json($places, 200);
+        return $this->returnDataResponse($places);
     }
     public function get(Request $request)
     {

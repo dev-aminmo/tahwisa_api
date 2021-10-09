@@ -65,7 +65,7 @@ class WishController extends Controller
            $query->select(['tag_id','name']);
        }])->withAvg('reviews','vote')->withCount('reviews')->with(['user'=>function($query){
            $query->select(['id','username','profile_picture']);
-       }])->paginate(1);
+       }])->paginate(2);
 
             return $this->returnDataResponse($data);
 
