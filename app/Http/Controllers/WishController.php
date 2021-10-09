@@ -52,36 +52,26 @@ class WishController extends Controller
     }
     public function all(Request $request){
 
-      //  try{
-        $id=auth()->user()->id;
+        try{
+        $userId=auth()->user()->id;
+       $data= Place::whereHas('wishes',function($query)use($userId){
+            $query->where('user_id',$userId);
+        })->whereHas('pictures')->with(['pictures'=> function ($query){
+           $query->select(//
+               'path',
+               'place_id'
+           );
+       }])->with(['tags'=>function($query){
+           $query->select(['tag_id','name']);
+       }])->withAvg('reviews','vote')->withCount('reviews')->with(['user'=>function($query){
+           $query->select(['id','username','profile_picture']);
+       }])->paginate(1);
 
+            return $this->returnDataResponse($data);
 
-          $data=  WishListItem::where('user_id',$id)->with(['place'=>function($query){
-              $query->whereHas('pictures')->with(['pictures'=> function ($query){
-                  $query->select(//
-                      'path',
-                      'place_id'
-                  );
-              }])->with(['tags'=>function($query){
-                  $query->select(['tag_id','name']);
-              }])->withAvg('reviews','vote')->withCount('reviews')->with(['user'=>function($query){
-                  $query->select(['id','username','profile_picture']);}]);
-          }])->paginate(10);
-        dd($data);
-
-            $final=[
-                'last_page'=>$data['last_page'],
-                'data'=>$data->pluck('place')
-            ];
-            dd($final);
-            $data = ['message' => 'success', 'data'=>$final];
-            return Response()->json($data,200);
-
-      //  }catch (\Exception $e){
-       //     $response['error']="an error has occurred";
-       //     return response()->json($response, 400);
-
-       // }
+        }catch (\Exception $e){
+            return $this->returnErrorResponse();
+        }
 
     }
 }

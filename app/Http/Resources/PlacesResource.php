@@ -10,7 +10,7 @@ class PlacesResource extends JsonResource
     public function toArray($request)
     {
 
-        return $this->place_response;
+        return $this->place;
 
     }
 }

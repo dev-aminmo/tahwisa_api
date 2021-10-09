@@ -60,7 +60,7 @@ Route::middleware('auth:api')->group(function () {
         // --------------------- WISHES ROUTES ---------------------
 
         Route::group(['prefix' => '/wishes'], function () {
-            Route::get("all", [WishController::class, "index"]);
+            Route::get("all", [WishController::class, "all"]);
             Route::post("add", [WishController::class, "add"]);
             Route::delete("delete/{place}", [WishController::class, "delete"]);
         });
