@@ -139,7 +139,7 @@ class PlaceController extends Controller
                 ->orWhere('description', 'ilike', '%' . $keyword . '%');
         })->select(['id', 'title', 'description'])->with(['tags' => function ($query) {
             $query->select(['tag_id', 'name']);
-        }])->get()->append("model");
+        }])->orderBy('title')->get()->append("model");
         $tags = Tag::where('name', 'ilike', '%' . $keyword . '%')->get()->append("model");
         $data =  $tags->toBase()->merge($places);
 
