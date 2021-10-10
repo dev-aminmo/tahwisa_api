@@ -135,12 +135,12 @@ class PlaceController extends Controller
     {
         $keyword = $request->get('query');
         $places = Place::whereHas('pictures')->where(function ($query) use ($keyword) {
-            $query->where('title', 'like', '%' . $keyword . '%')
-                ->orWhere('description', 'like', '%' . $keyword . '%');
+            $query->where('title', 'ilike', '%' . $keyword . '%')
+                ->orWhere('description', 'ilike', '%' . $keyword . '%');
         })->select(['id', 'title', 'description'])->with(['tags' => function ($query) {
             $query->select(['tag_id', 'name']);
         }])->get()->append("model");
-        $tags = Tag::where('name', 'like', '%' . $keyword . '%')->get()->append("model");
+        $tags = Tag::where('name', 'ilike', '%' . $keyword . '%')->get()->append("model");
         $data =  $tags->toBase()->merge($places);
 
         return $this->returnDataResponse($data);
@@ -157,10 +157,10 @@ class PlaceController extends Controller
             });
         } else {
             $query =   Place::whereHas('pictures')->where(function ($query) use ($keyword) {
-                $query->where('title', 'like', '%' . $keyword . '%')
-                    ->orWhere('description', 'like', '%' . $keyword . '%')
+                $query->where('title', 'ilike', '%' . $keyword . '%')
+                    ->orWhere('description', 'ilike', '%' . $keyword . '%')
                     ->orWhereHas('tags', function ($query) use ($keyword) {
-                        $query->where('name', 'like', '%' . $keyword . '%');
+                        $query->where('name', 'ilike', '%' . $keyword . '%');
                     });
             });
         }
