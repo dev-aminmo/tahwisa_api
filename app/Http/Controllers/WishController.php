@@ -30,7 +30,10 @@ class WishController extends Controller
             $id= auth()->user()['id'];
             $allData=$request->all();
             $allData['user_id']=$id;
-            WishListItem::create($allData);
+            $alreadyWished =WishListItem::where(['user_id'=>$id,
+                'place_id'=>$allData['place_id']]) -> first();
+            if(!$alreadyWished) {
+            WishListItem::create($allData);}
 
           return  $this->returnSuccessResponse('place added to wishlist successfully');
 
