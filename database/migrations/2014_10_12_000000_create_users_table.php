@@ -22,7 +22,9 @@ class CreateUsersTable extends Migration
             $table->string('profile_picture',255)->nullable();
             $table->string('provider_name')->nullable();
             $table->string('provider_id')->nullable();
-           // $table->rememberToken();
+            $table->bigInteger("role")->unsigned()->default(1);
+            $table->foreign("role")->references('id')->on("roles");
+            // $table->rememberToken();
             //$table->timestamps();
         });
     }
