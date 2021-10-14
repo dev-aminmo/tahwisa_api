@@ -28,6 +28,12 @@ Route::group([
 
 
 Route::middleware('auth:api')->group(function () {
+    Route::middleware('super_admin')->group(function () {
+        Route::get("admin", function () {
+            return "I am admin";
+        });
+
+    });
     Route::group(['prefix' => '/user'], function () {
         Route::get("", [UserController::class, "details"]);
         Route::post("/updatepicture", [UserController::class, "updateProfilePicture"]);

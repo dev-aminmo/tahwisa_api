@@ -23,7 +23,8 @@ class User extends Authenticatable
         'password',
         'profile_picture',
         'provider_name',
-        'provider_id'
+        'provider_id',
+        'role'
     ];
 
     public function wishes()

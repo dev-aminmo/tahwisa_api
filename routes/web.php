@@ -13,14 +13,21 @@ use App\Http\Controllers\PasswordResetController;
 |
 */
 
-Route::get('/', function () {
-    return "home";
+Route::get('/403', function () {
+    return response()->json([
+        'message' => 'User does not have any of the necessary access rights.',
+        'code' => 403
+    ], 403);
 });
 
 Route::group([
     'middleware' => 'web'
 ], function () {
 
-    Route::post('password/reset', [PasswordResetController::class,"reset"])->name("resetpassword");
-    Route::get('password/find/{token}', [PasswordResetController::class,'find'])->name('find');
+    Route::post('password/reset', [PasswordResetController::class, "reset"])->name("resetpassword");
+    Route::get('password/find/{token}', [PasswordResetController::class, 'find'])->name('find');
 });
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
