@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTables\UsersDataTable;
 use http\Env\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,7 +14,12 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    //
+    public function index(UsersDataTable $dataTable)
+    {
+        return $dataTable->render('home');
+    }
+
+
     public function registration(Request $request)
     {
         $validation = Validator::make($request->all(), [
@@ -56,6 +62,7 @@ class UserController extends Controller
             return response()->json(['error' => 'Unauthorized access','status code'=>401], 401);
         }
     }
+
     public function details()
     {
         $deatails=auth()->user();
@@ -64,27 +71,29 @@ class UserController extends Controller
         }
         return response()->json(['data'=> $deatails],200);
     }
-    public function updateProfilePicture(Request $request){
-     try{
-         $id= auth()->user()['id'];
-         $response = cloudinary()->upload($request->file('file')->getRealPath(),[
-             'folder'=> 'tahwisa/users/'.$id.'/',
-             'public_id'=>'profile_picture'.$id,
-             'overwrite'=>true,
-             'format'=>"webp"
-         ])->getSecurePath();
-         $oldPath=auth()->user()['profile_picture'];
-         User::where('id',$id)->update(['profile_picture'=>$response]);
-         $data = ['message' => 'profile picture updated successfully','data'=>$response,'response code'=>201];
-        Storage::delete($oldPath);
-         return response()->json($data,201);
-     }catch (Exception $e){
-         $resArr["status code"] = 200;
-         return response()->json($resArr, 200);
 
-     }
+    public function updateProfilePicture(Request $request){
+        try{
+            $id= auth()->user()['id'];
+            $response = cloudinary()->upload($request->file('file')->getRealPath(),[
+                'folder'=> 'tahwisa/users/'.$id.'/',
+                'public_id'=>'profile_picture'.$id,
+                'overwrite'=>true,
+                'format'=>"webp"
+            ])->getSecurePath();
+            $oldPath=auth()->user()['profile_picture'];
+            User::where('id',$id)->update(['profile_picture'=>$response]);
+            $data = ['message' => 'profile picture updated successfully','data'=>$response,'response code'=>201];
+            Storage::delete($oldPath);
+            return response()->json($data,201);
+        }catch (Exception $e){
+            $resArr["status code"] = 200;
+            return response()->json($resArr, 200);
+
+        }
 
     }
+
     /**
      * Social Login
      */
@@ -118,7 +127,7 @@ class UserController extends Controller
             if(!empty($user)){
                 $user->provider_name=$provider;
                 $user->provider_id= $providerUser->id;
-               $user->save();
+                $user->save();
             }else{
                 $user = User::create([
                     "username"=>$u["username"],
@@ -137,6 +146,7 @@ class UserController extends Controller
             'token' => $token
         ],201);
     }
+
     /**
      * Logout user (Revoke the token)
      *

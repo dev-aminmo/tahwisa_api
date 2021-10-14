@@ -1,7 +1,10 @@
 <?php
 
+use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PasswordResetController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -26,8 +29,14 @@ Route::group([
 
     Route::post('password/reset', [PasswordResetController::class, "reset"])->name("resetpassword");
     Route::get('password/find/{token}', [PasswordResetController::class, 'find'])->name('find');
+    Route::get('admin/pages', [UserController::class, 'index']);
+    Route::get('admin/settings', function () {
+        return view('page');
+    });
 });
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+//Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/home', [UserController::class, 'index'])->name('home');
+Route::get('/users', [UserController::class, 'index'])->name('users.index');

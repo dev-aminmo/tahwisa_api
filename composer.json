@@ -25,7 +25,9 @@
         "laravel/tinker": "^2.5",
         "laravel/ui": "^3.3",
         "spatie/image-optimizer": "^1.4",
-        "staudenmeir/eloquent-eager-limit": "^1.0"
+        "staudenmeir/eloquent-eager-limit": "^1.0",
+        "yajra/laravel-datatables": "^1.5",
+        "yajra/laravel-datatables-oracle": "~9.0"
     },
     "require-dev": {
         "facade/ignition": "^2.5",
