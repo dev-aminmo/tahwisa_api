@@ -57,12 +57,19 @@
 @stack('scripts')--}}
 
 @extends('adminlte::page')
+@section('title', 'Dashboard')
 
-
+@section('content_header')
+    <h1>Dashboard</h1>
+@stop
 @section('content')
-    {{$dataTable->table()}}
+    <p>Welcome to this beautiful admin panel.</p>
+
+    {{--   {{$dataTable->table()}}--}}
 @endsection
 
+{{--
 @push('datatable_script')
     {{$dataTable->scripts()}}
 @endpush
+--}}

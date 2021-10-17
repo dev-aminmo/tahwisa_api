@@ -247,17 +247,17 @@ return [
             'can' => 'manage-blog',
         ],
         [
-            'text' => 'pages',
-            'url' => 'admin/pages',
-            'icon' => 'far fa-fw fa-file',
+            'text' => 'Tags',
+            'url' => 'admin/tags',
+            'icon' => 'fa fa-hashtag',
             'label' => null,
             'label_color' => 'success',
         ],
         ['header' => 'account_settings'],
         [
-            'text' => 'profile',
-            'url' => 'admin/settings',
-            'icon' => 'fas fa-fw fa-user',
+            'text' => 'Admins',
+            'url' => 'admin/admins',
+            'icon' => 'fas fa-fw fa-users',
         ],
         [
             'text' => 'change_password',

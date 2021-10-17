@@ -73,6 +73,10 @@
         <meta name = "msapplication-TileImage" content = "{{ asset('favicon/ms-icon-144x144.png') }}">
     @endif
 
+
+    {{--   <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.1/css/bootstrap.min.css" rel="stylesheet">--}}
+    <link href = "https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap5.min.css" rel = "stylesheet">
+
 </head>
 
 <body class = "@yield('classes_body')" @yield('body_data')>
@@ -105,9 +109,28 @@
 
 {{-- Custom Scripts --}}
 @yield('adminlte_js')
-
 <script src = "{{ mix('js/app.js') }}"></script>
 <script src = "{{ asset('vendor/datatables/buttons.server-side.js') }}"></script>
+
+
+<script src = "https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity = "sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin = "anonymous"></script>
+{{--
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+--}}
+<script>
+    $('#flash-overlay-modal').modal();
+</script>
+
+
+<script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src = "https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.js"></script>
+<script src = "https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+
+<script src = "https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+<script src = "https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+
 @stack('datatable_script')
 
 </body>

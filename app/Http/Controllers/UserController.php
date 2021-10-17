@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\DataTables\UsersDataTable;
+use App\Models\Tag;
 use http\Env\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -11,12 +12,48 @@ use Laravel\Socialite\Facades\Socialite;
 use Validator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
+use Yajra\DataTables\DataTables;
 
 class UserController extends Controller
 {
+    public function index(Request $request)
+    {
+        if ($request->ajax()) {
+            $data = User::query();
+            return Datatables::of($data)
+                ->addIndexColumn()
+                ->addColumn('action', function ($row) {
+
+                    $btn = '<a href="javascript:void(0)" class="edit btn btn-info btn-sm ml-2">View</a>';
+                    $btn = $btn . '<a href="javascript:void(0)" class="edit btn btn-primary btn-sm ml-2">Edit</a>';/*
+                    $btn = $btn.'<a href="javascript:void(0)" class="delete btn btn-danger btn-sm" data-id="'.$row -> id.'">Delete</a>';*/
+                    $btn = $btn . '<button data-toggle="modal" data-target="#modal-delete" class="delete btn btn-danger btn-sm ml-2" data-id="' . $row->id . '">Delete</button>';
+
+                    return $btn;
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
+
+        return view('admins');
+    }
+
+    /*
     public function index(UsersDataTable $dataTable)
     {
-        return $dataTable->render('home');
+        return $dataTable->render('admins');
+    }*/
+    public function delete(Request $request)
+    {
+        //  flash('Your password has been changed successfully')->success();
+        flash()->overlay('<div class="text-center">
+					<i class="far fa-check-circle fa-5x mr-1 text-green"></i>
+									<p class="mt-4 h5 " >User delete successfully</p>
+
+				</div>
+				', ' ');
+
+        return redirect()->back();
     }
 
 
