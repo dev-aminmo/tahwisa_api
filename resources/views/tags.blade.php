@@ -50,6 +50,7 @@
         </table>
         <!-- modal -->
         <form method = "post" id = "delete-form" action = " {{route('tags.delete')}}">
+            <input id = "delete-id" type = "hidden" name = "id">
             @csrf
             <div class = "modal fade" style = "margin-top: 200px" id = "modal-delete">
                 <div class = "modal-dialog">
@@ -108,7 +109,8 @@
                             element.addEventListener('click', event => {
                                 const idValue = element.dataset.id;
                                 //   $('#delete-form').action = "/AAA";
-                                $("#delete-form").attr('action', $("#delete-form").attr('action') + "/" + idValue);
+                                //  $("#delete-form").attr('action', $("#delete-form").attr('action') + "/" + idValue);
+                                $('#delete-id').val(idValue);
                             })
 
                         })

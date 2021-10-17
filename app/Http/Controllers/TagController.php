@@ -66,8 +66,15 @@ class TagController extends Controller
         }
     }
 
-    public function delete(Request $request, $id)
+    public function delete(Request $request)
     {
+        $id = $request->id;
+        $validation = Validator::make($request->all(), [
+            'id' => 'required|exists:tags',
+        ]);
+        if ($validation->fails()) {
+            return redirect()->back()->with(['error' => $validation->errors()]);
+        }
         $tag = Tag::find($id);
         if (!$tag) {
             return redirect()->back()->with(['error' => "tag does not exist"]);
