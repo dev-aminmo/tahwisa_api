@@ -36,6 +36,7 @@ Route::group([
         //  Route::get('admin/tags', [UserController::class, 'index']);
         Route::get('admin/tags', [TagController::class, 'index'])->name('tags.index');
         Route::post('admin/tags/create', [TagController::class, 'create'])->name('tags.create');
+        Route::post('admin/tags/delete/{id?}', [TagController::class, 'delete'])->name('tags.delete');
         Route::get('admin/admins', [UserController::class, 'index'])->name('users.index');
         Route::get("user/delete/{id}", [UserController::class, "delete"])->name("user/delete");
 

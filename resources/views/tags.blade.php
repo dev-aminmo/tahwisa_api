@@ -49,27 +49,29 @@
             </tbody>
         </table>
         <!-- modal -->
-        <div class = "modal fade" style = "margin-top: 200px" id = "modal-delete">
-            <div class = "modal-dialog">
-                <div class = "modal-content">
-                    <div class = "modal-header">
-                        <h4 class = "modal-title"><i class = "fas fa-trash text-danger"></i> Delete User</h4>
-                        <button type = "button" class = "close border-danger" data-dismiss = "modal"
-                                aria-label = "Close">×
-                        </button>
-                    </div>
-                    <div class = "modal-body">
+        <form method = "post" id = "delete-form" action = " {{route('tags.delete')}}">
+            @csrf
+            <div class = "modal fade" style = "margin-top: 200px" id = "modal-delete">
+                <div class = "modal-dialog">
+                    <div class = "modal-content">
+                        <div class = "modal-header">
+                            <h4 class = "modal-title"><i class = "fas fa-trash text-danger"></i> Delete User</h4>
+                            <button type = "button" class = "close border-danger" data-dismiss = "modal"
+                                    aria-label = "Close">×
+                            </button>
+                        </div>
+                        <div class = "modal-body">
 
-                        <p>Are you sure you want to delete this User</p>
-                    </div>
-                    <div class = "modal-footer justify-content-between">
-                        <button type = "button" class = "btn btn-default" data-dismiss = "modal">Close</button>
-                        <a href = "bb" class = "btn btn-danger">Delete</a>
+                            <p>Are you sure you want to delete this User</p>
+                        </div>
+                        <div class = "modal-footer justify-content-between">
+                            <button type = "button" class = "btn btn-default" data-dismiss = "modal">Close</button>
+                            <input id = "btn" type = "submit" class = "btn btn-danger" value = "Delete">
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-
+        </form>
         @stop
 
         @section('css')
@@ -100,15 +102,13 @@
                         const deleteButtons = document.getElementsByClassName('delete');
                         console.log(deleteButtons);
                         const array = Array.from(deleteButtons)
-                        // const array=  Array.prototype.slice.call(deleteButtons)
-                        //const array  = [...deleteButtons]
                         console.log(array)
 
                         array.forEach(element => {
                             element.addEventListener('click', event => {
                                 const idValue = element.dataset.id;
-
-                                console.log(idValue)
+                                //   $('#delete-form').action = "/AAA";
+                                $("#delete-form").attr('action', $("#delete-form").attr('action') + "/" + idValue);
                             })
 
                         })

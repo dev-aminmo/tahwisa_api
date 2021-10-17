@@ -66,6 +66,28 @@ class TagController extends Controller
         }
     }
 
+    public function delete(Request $request, $id)
+    {
+        $tag = Tag::find($id);
+        if (!$tag) {
+            return redirect()->back()->with(['error' => "tag does not exist"]);
+        }
+        try {
+            $tag->delete();
+            flash()->overlay('<div class="text-center">
+					<i class="far fa-check-circle fa-5x mr-1 text-green"></i>
+									<p class="mt-4 h5 " >Tag deleted successfully</p>
+
+				</div>
+				', ' ');
+
+            return redirect()->back();
+        } catch (\Exception $e) {
+            return redirect()->back()->with(['error' => "error Occurred"]);
+
+        }
+    }
+
     public function tags(Request $request)
     {
         $query = $request->get('query');
