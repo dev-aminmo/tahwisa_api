@@ -9,8 +9,8 @@ class Tag extends Model
 {
     use HasFactory;
 
-    protected $fillable =['id', 'name'];
-    public $timestamps=false;
+    protected $fillable = ['id', 'name', 'picture'];
+    public $timestamps = false;
 
     protected $hidden = ['laravel_through_key'];
 

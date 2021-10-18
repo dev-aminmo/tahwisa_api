@@ -8,6 +8,7 @@ use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Symfony\Component\Console\Input\Input;
 use Yajra\DataTables\DataTables;
 
@@ -28,8 +29,8 @@ class TagController extends Controller
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
 
-                    $btn = '<a href="javascript:void(0)" class="edit btn btn-info btn-sm ml-2">View</a>';
-                    $btn = $btn . '<a href="javascript:void(0)" class="edit btn btn-primary btn-sm ml-2">Edit</a>';/*
+                    // $btn = '<a href="javascript:void(0)" class="edit btn btn-info btn-sm ml-2">View</a>';
+                    $btn = '<button data-toggle="modal" data-target="#modal-edit" data-id="' . $row->id . '"  data-name="' . $row->name . '" data-picture="' . $row->picture . '" class="edit btn btn-primary btn-sm ml-2">Edit</button>';/*
                     $btn = $btn.'<a href="javascript:void(0)" class="delete btn btn-danger btn-sm" data-id="'.$row -> id.'">Delete</a>';*/
                     $btn = $btn . '<button data-toggle="modal" data-target="#modal-delete" class="delete btn btn-danger btn-sm ml-2" data-id="' . $row->id . '">Delete</button>';
 
@@ -92,6 +93,40 @@ class TagController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->with(['error' => "error Occurred"]);
 
+        }
+    }
+
+    public function edit(Request $request)
+    {
+        $id = $request->id;
+        $validation = Validator::make($request->all(), [
+            'id' => 'required|exists:tags',
+            'name' => [
+                'required',
+                Rule::unique('tags', 'name')->ignore($id),
+            ],
+            'picture' => 'string|nullable',
+
+        ]);
+        if ($validation->fails()) {
+            return redirect()->back()->with(['error' => $validation->errors()]);
+        }
+        $tag = Tag::find($id);
+        if (!$tag) {
+            return redirect()->back()->with(['error' => "tag does not exist"]);
+        }
+        try {
+            $tag->update($request->all());
+            flash()->overlay('<div class="text-center">
+					<i class="far fa-check-circle fa-5x mr-1 text-green"></i>
+									<p class="mt-4 h5 " >Tag Updated successfully</p>
+
+				</div>
+				', ' ');
+
+            return redirect()->back();
+        } catch (\Exception $e) {
+            return redirect()->back()->with(['error' => "error Occurred"]);
         }
     }
 
