@@ -16,7 +16,7 @@ class CreateReviewsTable extends Migration
         Schema::create('reviews', function (Blueprint $table) {
             $table->id();
             $table->decimal('vote', 1, 1);
-            $table->string("comment");
+            $table->string("comment")->nullable();
             $table->bigInteger("place_id")->unsigned();
             $table->bigInteger('user_id')->unsigned();
             $table->foreign("user_id")->references('id')->on("users");

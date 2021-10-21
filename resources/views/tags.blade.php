@@ -93,16 +93,19 @@
                                   id = "formEdit" class = "form-g">
                                 @csrf
                                 <input hidden name = "id" id = "idUpdate">
+
                                 {{-- <input id = "idUpdate" type = "hidden" name = "id">--}}
 
                                 <div class = "form-c row mb-3">
                                     <label for = "name" class = "col-sm-4 col-form-label"
-                                           style = "color:#555555">Nom</label>
+                                           style = "color:#555555">Name</label>
                                     <div class = "col-sm-8">
                                         <div>
                                             <input required type = "text" class = "form-control" name = "name"
                                                    id = "nameEdit"
                                                    placeholder = "Tag name">
+                                            <label id = "nameEdit-error" class = "error" for = "nameEdit"
+                                                   style = "display: none">Name is required</label>
                                         </div>
                                     </div>
                                 </div>
@@ -114,9 +117,24 @@
                                             <input type = "text" class = "form-control" name = "picture"
                                                    id = "pictureEdit"
                                                    placeholder = "Tag picture">
-                                            <label id = "pictureEdit-error" class = "error" for = "pictureEdit">imageUrl
-                                                                                                                is not
-                                                                                                                valid</label>
+                                            <label id = "pictureEdit-error" class = "error" for = "pictureEdit"
+                                                   style = "display: none">imageUrl
+                                                                           is not
+                                                                           valid</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class = "form-c row">
+                                    <label for = "top" class = "col-sm-4 col-form-label" style = "color:#555555">Top
+                                                                                                                 Tags</label>
+                                    <div class = "col-sm-8">
+                                        <div>
+                                            <select class = "form-control" name = "top" id = "topTagUpdate">
+                                                <option value = "0">False</option>
+                                                <option value = "1">True</option>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>

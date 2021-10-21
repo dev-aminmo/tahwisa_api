@@ -39,7 +39,7 @@ Route::group([
         Route::post('admin/tags/delete', [TagController::class, 'delete'])->name('tags.delete');
         Route::post('admin/tags/edit', [TagController::class, 'edit'])->name('tags.edit');
         Route::get('admin/admins', [UserController::class, 'index'])->name('users.index');
-        Route::get("user/delete/{id}", [UserController::class, "delete"])->name("user/delete");
+        Route::post('admin/user/edit', [UserController::class, 'adminUpdateUser'])->name('users.edit');
 
 
     });

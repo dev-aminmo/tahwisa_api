@@ -29,22 +29,42 @@ $(function () {
         })
         editArray.forEach(element => {
             element.addEventListener('click', event => {
+                $('#nameEdit-error').css('display', 'none');
+                $('#pictureEdit-error').css('display', 'none');
+
                 $('#idUpdate').val(element.dataset.id);
                 $('#nameEdit').val(element.dataset.name);
                 $('#pictureEdit').val(element.dataset.picture);
+                $('#topTagUpdate').val(element.dataset.top);
             })
 
         })
         let isPicture = true;
         $("#submitButtonFormEdit").click(function () {
             $('#nameEdit').val($.trim($('#nameEdit').val()))
-            getData($('#pictureEdit').val()).then(function (r) {
-                isPicture = true;
-            }).catch(function (e) {
-                isPicture = false;
-            }).finally(() => {
-                $('#formEdit').submit();
-            });
+            if ($('#nameEdit').val().length == 0) {
+                $('#nameEdit-error').css('display', 'inline-block');
+            } else {
+                if ($('#pictureEdit').val().length > 0) {
+                    getData($('#pictureEdit').val()).then(function (r) {
+                        isPicture = true;
+                    }).catch(function (e) {
+                        isPicture = false;
+                    }).finally(() => {
+                        if (!isPicture) {
+                            $('#pictureEdit-error').css('display', 'inline-block');
+                        } else {
+                            $('#formEdit').submit();
+                        }
+                    });
+                } else {
+                    $('#formEdit').submit();
+
+                }
+
+
+            }
+
         });
 
         function getData(value) {
@@ -64,27 +84,29 @@ $(function () {
             });
         };
 
-        $.validator.addMethod(
-            "imageUrl",
-            function (value, element) {
-                return isPicture;
-            },
-            "make sure picture Url is valid"
-        );
+        /*       $.validator.addMethod(
+                   "imageUrl",
+                   function (value, element) {
+                       return isPicture;
+                   },
+                   "make sure picture Url is valid"
+               );*/
 
-        $('#formEdit').validate({
-            rules: {
-                name: {
-                    required: true,
-                    minlength: 1
-                },
-                picture: {
-                    required: true,
-                    imageUrl: true
-                }
-            }
+        /*      $('#formEdit').validate({
+                  rules: {
+                      name: {
+                          required: true,
+                          minlength: 1
+                      },
+                      picture: {
+                          required: false,
+                          imageUrl: true
+                      }
+                  }
 
-        });
+              });*/
+
+
     });
 
 });

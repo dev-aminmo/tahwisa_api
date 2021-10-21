@@ -8,6 +8,7 @@ use http\Env\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use Illuminate\Validation\Rule;
 use Laravel\Socialite\Facades\Socialite;
 use Validator;
 use Illuminate\Support\Facades\Storage;
@@ -24,11 +25,8 @@ class UserController extends Controller
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
 
-                    $btn = '<a href="javascript:void(0)" class="edit btn btn-info btn-sm ml-2">View</a>';
-                    $btn = $btn . '<a href="javascript:void(0)" class="edit btn btn-primary btn-sm ml-2">Edit</a>';/*
-                    $btn = $btn.'<a href="javascript:void(0)" class="delete btn btn-danger btn-sm" data-id="'.$row -> id.'">Delete</a>';*/
-                    $btn = $btn . '<button data-toggle="modal" data-target="#modal-delete" class="delete btn btn-danger btn-sm ml-2" data-id="' . $row->id . '">Delete</button>';
 
+                    $btn = '<button data-toggle="modal" data-target="#modal-edit" data-id="' . $row->id . '"  data-role="' . $row->role . '" class="edit btn btn-primary btn-sm ml-2">Edit</button>';
                     return $btn;
                 })
                 ->rawColumns(['action'])
@@ -38,22 +36,34 @@ class UserController extends Controller
         return view('admins');
     }
 
-    /*
-    public function index(UsersDataTable $dataTable)
+
+    public function adminUpdateUser(Request $request)
     {
-        return $dataTable->render('admins');
-    }*/
-    public function delete(Request $request)
-    {
-        //  flash('Your password has been changed successfully')->success();
-        flash()->overlay('<div class="text-center">
+        $id = $request->id;
+        $validation = \Illuminate\Support\Facades\Validator::make($request->all(), [
+            'id' => 'required|exists:users',
+            'role' => 'required|exists:roles,id'
+        ]);
+        if ($validation->fails()) {
+            return redirect()->back()->with(['error' => $validation->errors()]);
+        }
+        $user = User::find($id);
+        if (!$user) {
+            return redirect()->back()->with(['error' => "User does not exist"]);
+        }
+        try {
+            $user->update(['role' => $request->role]);
+            flash()->overlay('<div class="text-center">
 					<i class="far fa-check-circle fa-5x mr-1 text-green"></i>
-									<p class="mt-4 h5 " >User delete successfully</p>
+									<p class="mt-4 h5 " >User role Updated successfully</p>
 
 				</div>
 				', ' ');
 
-        return redirect()->back();
+            return redirect()->back();
+        } catch (\Exception $e) {
+            return redirect()->back()->with(['error' => "error Occurred"]);
+        }
     }
 
 

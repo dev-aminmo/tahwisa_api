@@ -16,6 +16,8 @@ class CreateTagsTable extends Migration
         Schema::create('tags', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
+            $table->string("picture", 2083)->nullable();
+            $table->boolean('top')->default(0);
         });
     }
 

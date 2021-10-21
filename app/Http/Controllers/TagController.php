@@ -16,11 +16,6 @@ class TagController extends Controller
 {
     use MyResponse;
 
-    //
-    /*    public function index(TagsDataTable $dataTable)
-        {
-            return $dataTable->render('tags');
-        }*/
     public function index(Request $request)
     {
         if ($request->ajax()) {
@@ -30,7 +25,7 @@ class TagController extends Controller
                 ->addColumn('action', function ($row) {
 
                     // $btn = '<a href="javascript:void(0)" class="edit btn btn-info btn-sm ml-2">View</a>';
-                    $btn = '<button data-toggle="modal" data-target="#modal-edit" data-id="' . $row->id . '"  data-name="' . $row->name . '" data-picture="' . $row->picture . '" class="edit btn btn-primary btn-sm ml-2">Edit</button>';/*
+                    $btn = '<button data-toggle="modal" data-target="#modal-edit" data-id="' . $row->id . '"  data-name="' . $row->name . '" data-picture="' . $row->picture . '"  data-top="' . $row->top . '" class="edit btn btn-primary btn-sm ml-2">Edit</button>';/*
                     $btn = $btn.'<a href="javascript:void(0)" class="delete btn btn-danger btn-sm" data-id="'.$row -> id.'">Delete</a>';*/
                     $btn = $btn . '<button data-toggle="modal" data-target="#modal-delete" class="delete btn btn-danger btn-sm ml-2" data-id="' . $row->id . '">Delete</button>';
 

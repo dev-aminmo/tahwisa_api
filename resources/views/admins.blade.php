@@ -3,80 +3,26 @@
 
 @section('title', 'Admins')
 
-
-{{--
 @section('content')
-    <div class="container">
+    <div class = "container">
         @include('flash::message')
     </div>
-    {{$dataTable->table()}}
-    <div><h1>Hello</h1></div>
-    <button  class="dzf btn btn-danger btn-sm ml-2" data-id="'.$row -> id.'">dzdss</button>
-    <button  class="dzf btn btn-danger btn-sm ml-2" data-id="'.$row -> id.'">Desasa</button>
-    <button   class="dzf btn btn-danger btn-sm ml-2" data-id="'.$row -> id.'">sasadsa</button>
-    <!-- modal -->
-    <div class="modal fade" style="margin-top: 200px" id="modal-delete" >
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title"><i class="fas fa-trash text-danger"></i> Delete User</h4>
-                    <button type="button" class="close border-danger" data-dismiss="modal" aria-label="Close">×</button>
-                </div>
-                <div class="modal-body">
-
-                    <p>Are you sure you want to delete this User</p>
-                </div>
-                <div class="modal-footer justify-content-between">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <a href="bb" class="btn btn-danger">Delete</a>
-                </div>
+    @if(Session::has('error'))
+        <div class = "alert alert-danger text-center" role = "alert"
+             style = "text-align: center; width: 50%;height:100%">
+            <div style = "margin-top:-3px;margin-left:-15px">
+                {{Session::get('error')}}
+                <button type = "button" class = "close" data-dismiss = "alert" aria-label = "Close">
+                    <span aria-hidden = "true">&times;</span>
+                </button>
             </div>
         </div>
-
-
-@stop
-
-@section('css')
-    <link rel = "stylesheet" href = "/css/admin_custom.css">
-@stop
-
-@push('datatable_script')
-    {{$dataTable->scripts()}}
-            <script>
-                document.addEventListener("DOMContentLoaded", function(e) {
-                    console.log("Hi there")
-                    const deleteButtons = document.getElementsByClassName('delete');
-                    console.log(deleteButtons);
-                    const array  = Array.from(deleteButtons)
-                    const testButtons = document.getElementsByClassName('dzf');
-                    console.log(testButtons);
-                    const testArray  = Array.from(testButtons)
-                    // const array=  Array.prototype.slice.call(deleteButtons)
-                    //const array  = [...deleteButtons]
-                    console.log(array)
-                    console.log(testArray)
-
-                    array.forEach(element => {
-                        element.addEventListener('click', event => {
-                            const idValue = element.dataset.id;
-
-                            console.log(idValue)
-                            idUpdate.value=idValue;
-                        })
-
-                    })
-                })
-            </script>
-
-@endpush
---}}
-@section('content')
-
+    @endif
     <div class = "container pt-2">
         <table class = "table table-striped data-table">
             <thead>
             <tr>
-                <th>No</th>
+                <th>Id</th>
                 <th>Name</th>
                 <th>Email</th>
                 <th>Role</th>
@@ -86,7 +32,7 @@
             <tbody>
             </tbody>
         </table>
-        <!-- modal -->
+        <!-- modal delete -->
         <div class = "modal fade" style = "margin-top: 200px" id = "modal-delete">
             <div class = "modal-dialog">
                 <div class = "modal-content">
@@ -107,54 +53,57 @@
                 </div>
             </div>
         </div>
+        <!-- modal  edit -->
+        <div class = "modal fade" id = "modal-edit">
+            <div class = "modal-dialog modal-lg">
+                <div class = "modal-content">
+                    <div class = "modal-header" style = "width:100%">
+                        <h4 style = "margin-left:15%; text-align: center; color:#555555">Modifier les informations
+                                                                                         personnelles
+                                                                                         de patient </h4>
+                        <button type = "button" class = "close" data-dismiss = "modal" aria-label = "Close">
+                            <span aria-hidden = "true">&times;</span>
+                        </button>
+                    </div>
+                    <div class = "card-body">
+                        <div style = "width: 98%; margin-left:1%; margin-top:1%">
+                            <form method = "POST" action = "{{route('users.edit')}}"
+                                  id = "formEdit" class = "form-g">
+                                @csrf
+                                <input hidden name = "id" id = "idUpdate">
+                                {{-- <input id = "idUpdate" type = "hidden" name = "id">--}}
 
+                                <div class = "form-c row">
+                                    <label for = "role" class = "col-sm-4 col-form-label"
+                                           style = "color:#555555">Role</label>
+                                    <div class = "col-sm-8">
+                                        <div>
+                                            <select class = "form-control" name = "role" id = "roleUpdate">
+                                                <option value = "1">User</option>
+                                                <option value = "2">Admin</option>
+                                                <option value = "3">Super Admin</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button type = "submit" id = "submitButtonFormEdit"
+                                        class = "btn btn-block bg-gradient-primary"
+                                        style = "margin-left: 40%;margin-top:20px ; width: 120px;color: white">
+                                    Save
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         @stop
 
         @section('css')
             <link rel = "stylesheet" href = "/css/admin_custom.css">
         @stop
         @push('datatable_script')
+            <script src = "{{ asset('js/admins.js') }}"></script>
 
-            <script type = "text/javascript">
-                $(function () {
-
-                    let table = $('.data-table').DataTable({
-                        processing: true,
-                        serverSide: true,
-                        autoWidth: false,
-                        order: [["0", "desc"]],
-                        ajax: "{{ route('users.index') }}",/*
-            drawCallback: function( settings ) {
-                //alert( 'DataTables has redrawn the table' );
-            },*/
-                        columns: [
-                            {data: 'id', name: 'id'},
-                            {data: 'username', name: 'username'},
-                            {data: 'email', name: 'email'},
-                            {data: 'role', name: 'role'},
-                            {data: 'action', name: 'action', orderable: false, searchable: false},
-                        ],
-
-                    });
-                    table.on('draw', function () {
-                        console.log("Hi there")
-                        const deleteButtons = document.getElementsByClassName('delete');
-                        console.log(deleteButtons);
-                        const array = Array.from(deleteButtons)
-                        // const array=  Array.prototype.slice.call(deleteButtons)
-                        //const array  = [...deleteButtons]
-                        console.log(array)
-
-                        array.forEach(element => {
-                            element.addEventListener('click', event => {
-                                const idValue = element.dataset.id;
-
-                                console.log(idValue)
-                            })
-
-                        })
-                    });
-
-                });
-            </script>
     @endpush
