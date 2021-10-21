@@ -39,7 +39,6 @@ class TagController extends Controller
                 ->rawColumns(['action'])
                 ->make(true);
         }
-
         return view('tags');
     }
 

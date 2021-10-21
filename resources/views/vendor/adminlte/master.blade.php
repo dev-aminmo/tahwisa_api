@@ -10,6 +10,7 @@
     <meta name = "csrf-token" content = "{{ csrf_token() }}">
 
     {{-- Custom Meta Tags --}}
+    @routes
     @yield('meta_tags')
 
     {{-- Title --}}

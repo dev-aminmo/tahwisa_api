@@ -95,7 +95,7 @@
                                 <input hidden name = "id" id = "idUpdate">
                                 {{-- <input id = "idUpdate" type = "hidden" name = "id">--}}
 
-                                <div class = "form-c row">
+                                <div class = "form-c row mb-3">
                                     <label for = "name" class = "col-sm-4 col-form-label"
                                            style = "color:#555555">Nom</label>
                                     <div class = "col-sm-8">
@@ -103,23 +103,20 @@
                                             <input required type = "text" class = "form-control" name = "name"
                                                    id = "nameEdit"
                                                    placeholder = "Tag name">
-                                            <i class = "fas fa-check-circle"></i>
-                                            <i class = "fas fa-exclamation-circle"></i>
-                                            <small>Error message</small>
                                         </div>
                                     </div>
                                 </div>
-                                <div class = "form-c row">
-                                    <label for = "surname" class = "col-sm-4 col-form-label"
-                                           style = "color:#555555">Prénom</label>
+                                <div class = "form-c row  mb-3">
+                                    <label for = "picture" class = "col-sm-4 col-form-label"
+                                           style = "color:#555555">Picture</label>
                                     <div class = "col-sm-8">
                                         <div>
                                             <input type = "text" class = "form-control" name = "picture"
                                                    id = "pictureEdit"
                                                    placeholder = "Tag picture">
-                                            <i class = "fas fa-check-circle"></i>
-                                            <i class = "fas fa-exclamation-circle"></i>
-                                            <small>Error message</small>
+                                            <label id = "pictureEdit-error" class = "error" for = "pictureEdit">imageUrl
+                                                                                                                is not
+                                                                                                                valid</label>
                                         </div>
                                     </div>
                                 </div>
@@ -128,7 +125,7 @@
                                 <button type = "button" id = "submitButtonFormEdit"
                                         class = "btn btn-block bg-gradient-primary"
                                         style = "margin-left: 40%;margin-top:20px ; width: 120px;color: white">
-                                    Enregistrer
+                                    Save
                                 </button>
                             </form>
                         </div>
@@ -144,75 +141,5 @@
         @stop
         @push('datatable_script')
 
-            <script type = "text/javascript">
-                $(function () {
-
-                    let table = $('.data-table').DataTable({
-                        processing: true,
-                        serverSide: true,
-                        autoWidth: false,
-
-                        order: [["0", "desc"]],
-
-                        ajax: "{{ route('tags.index') }}",
-                        columns: [
-                            {data: 'id', name: 'id'},
-                            {data: 'name', name: 'name'},
-                            {data: 'action', name: 'action', orderable: false, searchable: false},
-                        ],
-
-                    });
-                    table.on('draw', function () {
-                        console.log("Hi there")
-                        const deleteButtons = document.getElementsByClassName('delete');
-                        const deleteArray = Array.from(deleteButtons)
-                        const editButtons = document.getElementsByClassName('edit');
-                        const editArray = Array.from(editButtons)
-
-                        deleteArray.forEach(element => {
-                            element.addEventListener('click', event => {
-                                const idValue = element.dataset.id;
-                                //console.log(element.dataset.picture)
-                                //   $('#delete-form').action = "/AAA";
-                                //  $("#delete-form").attr('action', $("#delete-form").attr('action') + "/" + idValue);
-                                $('#delete-id').val(idValue);
-                            })
-
-                        })
-                        editArray.forEach(element => {
-                            element.addEventListener('click', event => {
-                                const idUpdate = element.dataset.id;
-                                console.log(element.dataset.id)
-
-                                $('#idUpdate').val(element.dataset.id);
-                                $('#nameEdit').val(element.dataset.name);
-                                $('#pictureEdit').val(element.dataset.picture);
-                                console.log($('#idUpdate').val())
-
-                                //   $('#delete-form').action = "/AAA";
-                                //  $("#delete-form").attr('action', $("#delete-form").attr('action') + "/" + idValue);
-                                // $('#delete-id').val(idValue);
-                            })
-
-                        })
-                        $("#submitButtonFormEdit").click(function () {
-                            console.log("clicked")
-                            $('#nameEdit').val($.trim($('#nameEdit').val()))
-                            $('#formEdit').submit();
-                            /*     $('#formEdit').submit(function(e){
-                                     e.preventDefault();
-                                     checkEditInputs();
-
-                                 });
-                                 function checkEditInputs() {
-                                     $('#nameEdit').val($.trim( $('#nameEdit').val()))
-                                     $('#formEdit').submit();
-                                 }*/
-                        });
-
-
-                    });
-
-                });
-            </script>
+            <script src = "{{ asset('js/tags.js') }}"></script>
     @endpush
