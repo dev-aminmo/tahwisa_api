@@ -20,7 +20,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = User::query();
+            $data = User::where('role', '<>', 3);
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
@@ -42,7 +42,7 @@ class UserController extends Controller
         $id = $request->id;
         $validation = \Illuminate\Support\Facades\Validator::make($request->all(), [
             'id' => 'required|exists:users',
-            'role' => 'required|exists:roles,id'
+            'role' => 'required|exists:roles,id|not_in:' . 3,
         ]);
         if ($validation->fails()) {
             return redirect()->back()->with(['error' => $validation->errors()]);

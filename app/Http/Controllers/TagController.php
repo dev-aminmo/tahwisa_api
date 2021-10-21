@@ -100,6 +100,7 @@ class TagController extends Controller
                 Rule::unique('tags', 'name')->ignore($id),
             ],
             'picture' => 'string|nullable',
+            'top' => 'boolean',
 
         ]);
         if ($validation->fails()) {

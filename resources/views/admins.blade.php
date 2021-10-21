@@ -81,7 +81,6 @@
                                             <select class = "form-control" name = "role" id = "roleUpdate">
                                                 <option value = "1">User</option>
                                                 <option value = "2">Admin</option>
-                                                <option value = "3">Super Admin</option>
                                             </select>
                                         </div>
                                     </div>
