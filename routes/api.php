@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\FcmTokenController;
 use App\Http\Controllers\TagController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
@@ -29,11 +30,14 @@ Route::group([
 
 Route::middleware('auth:api')->group(function () {
 
+    // --------------------- USER PROFILE ROUTES ---------------------
     Route::group(['prefix' => '/user'], function () {
         Route::get("", [UserController::class, "details"]);
         Route::post("/updatepicture", [UserController::class, "updateProfilePicture"]);
         Route::post("/logout", [UserController::class, "logout"]);
     });
+    // --------------------- END USER PROFILE ROUTES ---------------------
+
 
     // --------------------- REVIEWS ROUTES ---------------------
 
@@ -44,12 +48,9 @@ Route::middleware('auth:api')->group(function () {
         Route::post("update/{review}", [ReviewController::class, "update"]);
         Route::delete("delete/{review}", [ReviewController::class, "delete"]);
     });
-
     // --------------------- END REVIEWS ROUTES ---------------------
 
-
     // --------------------- PLACES ROUTES ---------------------
-
     Route::group(['prefix' => '/places'], function () {
         Route::get("all", [PlaceController::class, "all"]);
         Route::post("add", [PlaceController::class, "addPlace"]);
@@ -70,17 +71,26 @@ Route::middleware('auth:api')->group(function () {
     });
     // --------------------- END PLACES ROUTES ---------------------
 
-
+    // --------------------- TAGS ROUTES ---------------------
     Route::get("tags", [TagController::class, "tags"]);
     Route::get("tags/top", [TagController::class, "top"]);
+    // --------------------- END TAGS ROUTES ---------------------
+
+    // --------------------- FCM Tokens ROUTES ---------------------
+    Route::post("fcm/tokens/add", [FcmTokenController::class, "add"]);
+    // --------------------- END FCM Tokens ROUTES ---------------------
+
+
 });
+
+// --------------------- STATES & MUNICIPALS ROUTES ---------------------
 Route::get("/states", [StatesController::class, "all"]);
 Route::get("/municipales/{id}", [StatesController::class, "municipales"]);
+// ---------------------  END STATES & MUNICIPALS ROUTES ---------------------
 
+// ---------------------  AUTH ROUTES ---------------------
 Route::post("/register", [UserController::class, "registration"]);
 Route::post("/login", [UserController::class, "login"]);
 Route::get("/login", [UserController::class, "login"])->name('login');
-Route::get("/h", function () {
-    return "hello";
-});
 Route::post('social/login', [UserController::class, 'socialLogin']);
+// ---------------------  END AUTH ROUTES ---------------------
