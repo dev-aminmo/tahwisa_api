@@ -30,7 +30,8 @@ class Place extends Model
         'latitude',
         'longitude',
         'user_id',
-        'municipal_id'
+        'municipal_id',
+        'status'
     ];
     public function user()
     {

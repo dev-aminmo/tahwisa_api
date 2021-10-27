@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePlacesPicturesTable extends Migration
+class CreateTokensTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,12 @@ class CreatePlacesPicturesTable extends Migration
      */
     public function up()
     {
-        Schema::create('places_pictures', function (Blueprint $table) {
+        Schema::create('tokens', function (Blueprint $table) {
             $table->id();
-            $table->string("path",2083);
-            $table->bigInteger("place_id")->unsigned();
-            $table->foreign("place_id")->references('id')->on("places")->onDelete('cascade');
-            //$table->timestamps();
+            $table->string("token", 1000);
+            $table->bigInteger("user_id")->unsigned();
+            $table->foreign("user_id")->references('id')->on("users")->onDelete('cascade');
+            $table->timestamps();
         });
     }
 
@@ -29,6 +29,6 @@ class CreatePlacesPicturesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('places_pictures');
+        Schema::dropIfExists('tokens');
     }
 }
