@@ -21,7 +21,9 @@ class CreatePlacesTable extends Migration
             $table->decimal('longitude', 11, 8);
             $table->bigInteger('user_id')->unsigned();
             $table->foreign("user_id")->references('id')->on("users");
-           // $table->timestamps();
+            $table->bigInteger('status')->unsigned()->default(1);
+            $table->foreign("status")->references('id')->on("place_statuses")->onDelete('cascade');
+            // $table->timestamps();
         });
     }
 

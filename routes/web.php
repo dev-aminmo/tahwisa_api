@@ -23,6 +23,60 @@ Route::get('/403', function () {
         'code' => 403
     ], 403);
 });
+Route::get('/note', function () {
+
+    $SERVER_API_KEY = 'AAAAa6oXrZQ:APA91bEIdFaesV34GgHckLeGa5mYKk52CueuI_zYuCwXoCSb-r0tILN65fbYhZgQbJDtEU6Hm0osow-wk8SN9H0ElrVe0Az9FgQzH4CghBcrpgitpP9bZcXtvDdtQebVH-s5wVIKX9K7';
+
+    $token_1 = 'dhBIik_JSmK4XIsEuPFH9T:APA91bF3mAviYTSLLOnkhz7fIo8uZ_IvhozvFwxub_pb3T4fauCLGnyfgjVsC2xRUpSHmYohsWQXgYGaYmcdZyn3iQeCQC2J0eALtc7ChzRWRdSZeuMngSwxy_zNqEXiX85pk-PWR3oc';
+    $token_2 = 'xxzhBIik_JSmK4XIsEuPFH9T:APA91bF3mAviYTSLLOnkhz7fIo8uZ_XXhozvFwxub_pb3T4fauCLGnyfgjVsC2xRUpSHmYohsWQXgYGaYmcdZyn3iQeCQC2J0eALtc7ChzRWRdSZeuMngSwxy_zNqEXiX85pk-PWR3oc';
+
+    $data = [
+
+        "registration_ids" => [
+            $token_1
+        ],
+
+        "notification" => [
+
+            "title" => 'Aw chtaho',
+
+            "body" => 'Description',
+
+            "sound" => "default" // required for sound on ios
+
+        ],
+
+    ];
+
+    $dataString = json_encode($data);
+
+    $headers = [
+
+        'Authorization: key=' . $SERVER_API_KEY,
+
+        'Content-Type: application/json',
+
+    ];
+
+    $ch = curl_init();
+
+    curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
+
+    curl_setopt($ch, CURLOPT_POST, true);
+
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $dataString);
+
+    $response = curl_exec($ch);
+
+    dd($response);
+
+});
 
 Route::group([
     'middleware' => 'web'
