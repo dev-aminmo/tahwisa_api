@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\UserController;
+use App\Models\FcmToken;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PasswordResetController;
@@ -25,20 +26,14 @@ Route::get('/403', function () {
 });
 Route::get('/note', function () {
 
-    $SERVER_API_KEY = 'AAAAa6oXrZQ:APA91bEIdFaesV34GgHckLeGa5mYKk52CueuI_zYuCwXoCSb-r0tILN65fbYhZgQbJDtEU6Hm0osow-wk8SN9H0ElrVe0Az9FgQzH4CghBcrpgitpP9bZcXtvDdtQebVH-s5wVIKX9K7';
-
-    $token_1 = 'dhBIik_JSmK4XIsEuPFH9T:APA91bF3mAviYTSLLOnkhz7fIo8uZ_IvhozvFwxub_pb3T4fauCLGnyfgjVsC2xRUpSHmYohsWQXgYGaYmcdZyn3iQeCQC2J0eALtc7ChzRWRdSZeuMngSwxy_zNqEXiX85pk-PWR3oc';
-    $token_2 = 'xxzhBIik_JSmK4XIsEuPFH9T:APA91bF3mAviYTSLLOnkhz7fIo8uZ_XXhozvFwxub_pb3T4fauCLGnyfgjVsC2xRUpSHmYohsWQXgYGaYmcdZyn3iQeCQC2J0eALtc7ChzRWRdSZeuMngSwxy_zNqEXiX85pk-PWR3oc';
-
+    $SERVER_API_KEY = env('FCM_SERVER_API_KEY', '');
     $data = [
 
-        "registration_ids" => [
-            $token_1
-        ],
-
+        "registration_ids" =>
+            FcmToken::pluck('token')->toArray(),
         "notification" => [
 
-            "title" => 'Aw chtaho',
+            "title" => 'Aw chtaho 3',
 
             "body" => 'Description',
 

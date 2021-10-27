@@ -80,7 +80,6 @@ Route::middleware('auth:api')->group(function () {
     Route::post("fcm/tokens/add", [FcmTokenController::class, "add"]);
     // --------------------- END FCM Tokens ROUTES ---------------------
 
-
 });
 
 // --------------------- STATES & MUNICIPALS ROUTES ---------------------
