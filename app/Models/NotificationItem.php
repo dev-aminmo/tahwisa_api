@@ -10,5 +10,6 @@ class NotificationItem extends Model
     use HasFactory;
 
     protected $table = "user_notification";
+    protected $fillable = ['user_id', 'notification_id'];
 
 }

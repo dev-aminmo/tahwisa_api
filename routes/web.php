@@ -4,8 +4,13 @@ use App\Http\Controllers\TagController;
 use App\Http\Controllers\UserController;
 use App\Models\FcmToken;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PasswordResetController;
+use LaravelFCM\Facades\FCM;
+use LaravelFCM\Message\OptionsBuilder;
+use LaravelFCM\Message\PayloadDataBuilder;
+use LaravelFCM\Message\PayloadNotificationBuilder;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,7 +33,6 @@ Route::get('/note', function () {
 
     $SERVER_API_KEY = env('FCM_SERVER_API_KEY', '');
     $data = [
-
         "registration_ids" =>
             FcmToken::pluck('token')->toArray(),
         "notification" => [
@@ -71,6 +75,27 @@ Route::get('/note', function () {
 
     dd($response);
 
+});
+Route::get('/fcm', function () {
+    $optionBuilder = new OptionsBuilder();
+    $optionBuilder->setTimeToLive(60 * 20);
+    $notificationBuilder = new PayloadNotificationBuilder('sahbi title');
+    $notificationBuilder->setBody('Hello world')
+        ->setSound('default');
+    $dataBuilder = new PayloadDataBuilder();
+    $dataBuilder->addData(['a_data' => 'my_data']);
+    $option = $optionBuilder->build();
+    $notification = $notificationBuilder->build();
+    $data = $dataBuilder->build();
+    $tokens = FcmToken::pluck('token')->toArray();
+    $downstreamResponse = FCM::sendTo($tokens, $option, $notification, $data);
+    foreach ($downstreamResponse->tokensToDelete() as $token) {
+        DB::transaction(function () use ($token) {
+            FcmToken::where('token', $token)->delete();
+            return 'success';
+        });
+    }
+    dd($downstreamResponse);
 });
 
 Route::group([

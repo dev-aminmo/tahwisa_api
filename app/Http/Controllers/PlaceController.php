@@ -64,10 +64,10 @@ class PlaceController extends Controller
         if ($validation->fails()) {
             return $this->returnValidationResponse($validation->errors());
         }
-        $id = auth()->user()['id'];
+
 
         try {
-            Place::add($jsonData, $request->file('file'), $id);
+            Place::add($jsonData, $request->file('file'));
             return $this->returnSuccessResponse('place inserted successfully');
         } catch (Exception $exception) {
             return $this->returnErrorResponse($exception->getMessage());

@@ -2,12 +2,6 @@
 
 namespace App\Models;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Pool;
-use GuzzleHttp\Promise\Coroutine;
-use GuzzleHttp\Promise\Create;
-use GuzzleHttp\Promise\Each;
-use GuzzleHttp\Promise\EachPromise;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -101,19 +95,20 @@ class Place extends Model
     }
 
 
-    public static  function add($jsonData, $files, $id)
+    public static function add($jsonData, $files)
 
     {
         set_time_limit(500);
-        $tags = (array_key_exists("tags",$jsonData))?$jsonData['tags']:[];
-
-        $placeid =  DB::table('places')->insertGetId([
+        $tags = (array_key_exists("tags", $jsonData)) ? $jsonData['tags'] : [];
+        $user = auth()->user();
+        $placeid = DB::table('places')->insertGetId([
             'title' => $jsonData["title"],
             'description' => $jsonData["description"],
             'latitude' => $jsonData["latitude"],
             'longitude' => $jsonData["longitude"],
-            'user_id' => $id,
-            'municipal_id' => $jsonData["municipal_id"]
+            'user_id' => $user->id,
+            'municipal_id' => $jsonData["municipal_id"],
+            'status' => ($user->role == 1) ? 1 : 2
         ]);
         $pictures = [];
        $cloudinary= cloudinary();
@@ -146,15 +141,28 @@ class Place extends Model
                         'place_id' => $placeid,
                     ]);
                 }else{
-                $newTag = Tag::create([
-                    'name' => $tag['name'],
-                ]);
-                PlaceTag::create([
-                    'tag_id' => $newTag->id,
-                    'place_id' => $placeid,
-                ]);
+                    $newTag = Tag::create([
+                        'name' => $tag['name'],
+                    ]);
+                    PlaceTag::create([
+                        'tag_id' => $newTag->id,
+                        'place_id' => $placeid,
+                    ]);
                 }
             }
         }
+
+        $user = auth()->user();
+
+        if ($user->role == 1) {
+            $admins = User::whereIn('role', [2, 3])->pluck('id')->toArray();
+            $adminsTokens = FcmToken::whereIn('user_id', $admins)->pluck('token')->toArray();
+            $notification = Notification::create(['title' => "A new post has come", 'body' => "Verify then approve or reject", 'description' => '']);
+            foreach ($admins as $admin) {
+                NotificationItem::create(['user_id' => $admin, 'notification_id' => $notification->id]);
+            }
+            FcmToken::send($adminsTokens, $notification->title, $notification->body);
+        }
+
     }
 }

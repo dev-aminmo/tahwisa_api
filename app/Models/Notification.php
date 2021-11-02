@@ -10,5 +10,6 @@ class Notification extends Model
     use HasFactory;
 
     protected $table = "notifications";
+    protected $fillable = ['title', 'body', 'description'];
 
 }
