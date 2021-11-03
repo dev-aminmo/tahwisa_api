@@ -14,7 +14,9 @@ class NotificationController extends Controller
     function index(Request $request)
     {
         $userId = auth()->user()->id;
-        $data = NotificationItem::where('user_id', $userId)->with('notification')->get();
+        $data = NotificationItem::where('user_id', $userId)->orderBy('created_at', 'DESC')
+            ->whereDate('created_at', '>', \Carbon\Carbon::now()->subMonth())
+            ->with('notification')->get();
         $data = NotificationResource::collection($data);
         return $this->returnDataResponse($data);
     }
