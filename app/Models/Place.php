@@ -155,6 +155,7 @@ class Place extends Model
         $user = auth()->user();
 
         if ($user->role == 1) {
+
             $admins = User::whereIn('role', [2, 3])->pluck('id')->toArray();
             $adminsTokens = FcmToken::whereIn('user_id', $admins)->pluck('token')->toArray();
             $notification = Notification::create(['title' => "A new post has come", 'body' => "Verify then approve or reject", 'description' => '']);

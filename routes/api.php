@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\FcmTokenController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\TagController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
@@ -79,6 +80,9 @@ Route::middleware('auth:api')->group(function () {
     // --------------------- FCM Tokens ROUTES ---------------------
     Route::post("fcm/tokens/add", [FcmTokenController::class, "add"]);
     // --------------------- END FCM Tokens ROUTES ---------------------
+    // --------------------- Notifications ROUTES ---------------------
+    Route::get("notifications/index", [NotificationController::class, "index"]);
+    // --------------------- END Notifications ROUTES ---------------------
 
 });
 
