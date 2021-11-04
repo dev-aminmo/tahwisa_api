@@ -31,7 +31,10 @@ class FcmToken extends Model
         $notificationBuilder->setBody($body)
             ->setSound('default');
         $dataBuilder = new PayloadDataBuilder();
-        $dataBuilder->addData(['a_data' => 'my_data']);
+        $dataBuilder->addData([
+            "click_action" => "FLUTTER_NOTIFICATION_CLICK",
+            "status" => "done",
+            'a_data' => 'my_data']);
         $option = $optionBuilder->build();
         $notification = $notificationBuilder->build();
         $data = $dataBuilder->build();

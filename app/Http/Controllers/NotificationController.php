@@ -13,7 +13,8 @@ class NotificationController extends Controller
 
     function index(Request $request)
     {
-        $userId = auth()->user()->id;
+        //$userId = auth()->user()->id;
+        $userId = 31;
         $data = NotificationItem::where('user_id', $userId)->orderBy('created_at', 'DESC')
             ->whereDate('created_at', '>', \Carbon\Carbon::now()->subMonth())
             ->with('notification')->get();
