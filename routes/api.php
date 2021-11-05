@@ -82,6 +82,7 @@ Route::middleware('auth:api')->group(function () {
     // --------------------- END FCM Tokens ROUTES ---------------------
     // --------------------- Notifications ROUTES ---------------------
     Route::get("notifications/index", [NotificationController::class, "index"]);
+    Route::get("notifications/read/{id}", [NotificationController::class, "read"]);
     // --------------------- END Notifications ROUTES ---------------------
 
 });
