@@ -34,7 +34,7 @@ class FcmToken extends Model
         $dataBuilder->addData([
             "click_action" => "FLUTTER_NOTIFICATION_CLICK",
             "status" => "done",
-            'a_data' => 'my_data']);
+            'type' => 'place_added']);
         $option = $optionBuilder->build();
         $notification = $notificationBuilder->build();
         $data = $dataBuilder->build();

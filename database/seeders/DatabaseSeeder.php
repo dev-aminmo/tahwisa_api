@@ -16,5 +16,6 @@ class DatabaseSeeder extends Seeder
         //  \App\Models\Tag::factory(30)->create();
         //   \App\Models\User::factory(30)->create();
         $this->call(UsersTableSeeder::class);
+        $this->call(RefusePlaceMessages::class);
     }
 }

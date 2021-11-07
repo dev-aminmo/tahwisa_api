@@ -11,5 +11,5 @@ class Notification extends Model
 
     protected $table = "notifications";
     protected $fillable = ['title', 'body', 'description'];
-
+    public $timestamps = false;
 }

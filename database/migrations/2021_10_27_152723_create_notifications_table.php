@@ -18,7 +18,8 @@ class CreateNotificationsTable extends Migration
             $table->string("title");
             $table->string("body");
             $table->string("description");
-            $table->timestamps();
+            $table->bigInteger('type')->unsigned();
+            $table->foreign("type")->references('id')->on("notification_types");
         });
     }
 

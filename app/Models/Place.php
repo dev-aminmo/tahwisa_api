@@ -13,7 +13,7 @@ class Place extends Model
     use \Staudenmeir\EloquentEagerLimit\HasEagerLimit;
     use HasFactory;
 
-    public $timestamps = false;
+
     protected $hidden = ['laravel_through_key'];
     protected $appends = ['wished'];
 

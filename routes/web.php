@@ -115,7 +115,6 @@ Route::group([
         Route::get('admin/admins', [UserController::class, 'index'])->name('users.index');
         Route::post('admin/user/edit', [UserController::class, 'adminUpdateUser'])->name('users.edit');
 
-
     });
 });
 

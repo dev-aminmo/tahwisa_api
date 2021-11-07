@@ -23,7 +23,7 @@ class CreatePlacesTable extends Migration
             $table->foreign("user_id")->references('id')->on("users");
             $table->bigInteger('status')->unsigned()->default(1);
             $table->foreign("status")->references('id')->on("place_statuses")->onDelete('cascade');
-            // $table->timestamps();
+            $table->timestamps();
         });
     }
 
