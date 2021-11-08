@@ -67,8 +67,9 @@ class PlaceController extends Controller
 
 
         try {
-            Place::add($jsonData, $request->file('file'));
-            return $this->returnSuccessResponse('place inserted successfully');
+            $e = Place::add($jsonData, $request->file('file'));
+            $message = ($e) ? ['place inserted successfully', $e] : 'place inserted successfully';
+            return $this->returnSuccessResponse($message);
         } catch (Exception $exception) {
             return $this->returnErrorResponse($exception->getMessage());
         }

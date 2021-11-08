@@ -32,15 +32,7 @@ class User extends Authenticatable
 
         return $this->hasMany(WishListItem::class,'user_id');
     }
-    /*    public function wishes()
-    {
-        return $this->hasMany(WishListItem::class);
-    }*/
 
-   /* public function wished_places()
-    {
-        return $this->belongsToMany(Place::class, 'wishlist', 'user_id', 'place_id');
-    }*/
     public $timestamps = false;
     /**
      * The attributes that should be hidden for arrays.

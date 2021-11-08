@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\FcmTokenController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\TagController;
@@ -83,7 +84,16 @@ Route::middleware('auth:api')->group(function () {
     // --------------------- Notifications ROUTES ---------------------
     Route::get("notifications/index", [NotificationController::class, "index"]);
     Route::get("notifications/read/{id}", [NotificationController::class, "read"]);
+    Route::get("notifications/refused/messages/{notification}", [NotificationController::class, "getRefusePlaceMessages"]);
+
     // --------------------- END Notifications ROUTES ---------------------
+    // --------------------- Admin ROUTES ---------------------
+    Route::get("admin/place/check/{place}", [AdminController::class, "checkIfPlaceIsAvailable"]);
+    Route::post("admin/place/approve/{place}", [AdminController::class, "approvePlace"]);
+    Route::get("admin/place/refuse/messages", [AdminController::class, "getRefusePlaceMessages"]);
+    Route::post("admin/place/refuse/{place}", [AdminController::class, "refusePlace"]);
+
+    // --------------------- END Admin ROUTES ---------------------
 
 });
 

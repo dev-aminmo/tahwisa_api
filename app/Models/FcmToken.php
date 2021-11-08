@@ -23,21 +23,26 @@ class FcmToken extends Model
         'user_id',
     ];
 
-    static function send($tokens, $title, $body)
+    static function send($tokens, $notification)
     {
         $optionBuilder = new OptionsBuilder();
         $optionBuilder->setTimeToLive(60 * 20);
-        $notificationBuilder = new PayloadNotificationBuilder($title);
-        $notificationBuilder->setBody($body)
+        $notificationBuilder = new PayloadNotificationBuilder($notification->title);
+        $notificationBuilder->setBody($notification->body)
             ->setSound('default');
         $dataBuilder = new PayloadDataBuilder();
         $dataBuilder->addData([
             "click_action" => "FLUTTER_NOTIFICATION_CLICK",
             "status" => "done",
-            'type' => 'place_added']);
+            'id' => $notification->id,
+            'type' => $notification->type,
+            'place_id' => $notification->place_id,
+            'description' => $notification->description,
+        ]);
         $option = $optionBuilder->build();
         $notification = $notificationBuilder->build();
         $data = $dataBuilder->build();
+        $tokens = (count($tokens) > 1) ? $tokens : [$tokens];
         $downstreamResponse = FCM::sendTo($tokens, $option, $notification, $data);
         /*   forEach($downstreamResponse->tokensToDelete() as  $token){
                DB::transaction(function () use ($token) {

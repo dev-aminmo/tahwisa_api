@@ -5,13 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class RefusePlaceMessage extends Model
+class PlaceStatus extends Model
 {
     use HasFactory;
 
-    protected $table = 'refuse_place_messages';
-    protected $fillable = ['name'];
-    protected $hidden = ['laravel_through_key'];
-
+    protected $table = "place_statuses";
     public $timestamps = false;
 }

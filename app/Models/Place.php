@@ -67,7 +67,7 @@ class Place extends Model
 
     public function getWishedAttribute()
     {
-        $user_id =  auth()->user()->id;
+        $user_id = auth()->user()->id;
         $place_id = $this->attributes['id'];
         $wished = false;
         if (WishListItem::where([["user_id", $user_id], ["place_id", $place_id]])->exists()) {
@@ -75,10 +75,17 @@ class Place extends Model
         }
         return $this->attributes['wished'] = $wished;
     }
+
+    public function getStatusAttribute($value)
+
+    {
+        return PlaceStatus::find($value)->name;
+    }
+
     public function wishes()
     {
 
-        return $this->hasMany(WishListItem::class,'place_id','id');
+        return $this->hasMany(WishListItem::class, 'place_id', 'id');
     }
 
 
@@ -99,9 +106,18 @@ class Place extends Model
 
     {
         set_time_limit(500);
+        $pictures = [];
+        $cloudinary = cloudinary();
+        foreach ($files as $file) {
+            $pictures[] = $cloudinary->upload($file->getRealPath(), [
+                'folder' => 'tahwisa/places/v2/',
+                'quality' => "auto",
+                'fetch_format' => "auto"
+            ])->getSecurePath();
+        }
         $tags = (array_key_exists("tags", $jsonData)) ? $jsonData['tags'] : [];
         $user = auth()->user();
-        $placeid = DB::table('places')->insertGetId([
+        $placeId = Place::create([
             'title' => $jsonData["title"],
             'description' => $jsonData["description"],
             'latitude' => $jsonData["latitude"],
@@ -109,21 +125,13 @@ class Place extends Model
             'user_id' => $user->id,
             'municipal_id' => $jsonData["municipal_id"],
             'status' => ($user->role == 1) ? 1 : 2
-        ]);
-        $pictures = [];
-       $cloudinary= cloudinary();
-        foreach ($files as $file) {
-           $pictures[] = $cloudinary->upload($file->getRealPath(), [
-                'folder' => 'tahwisa/places/' . $placeid . '/',
-                'quality' => "auto",
-                'fetch_format' => "auto"
-            ])->getSecurePath();
-        }
+        ])->id;
+
         foreach ($pictures as $k => $picture) {
             $arg = [];
             $arg['path'] = $picture;
             DB::table('places_pictures')->insert([
-                'path' => $arg['path'], 'place_id' => $placeid
+                'path' => $arg['path'], 'place_id' => $placeId
             ]);
         }
 
@@ -131,22 +139,14 @@ class Place extends Model
             if (array_key_exists('id',$tag)) {
                 PlaceTag::create([
                     'tag_id' => $tag['id'],
-                    'place_id' => $placeid,
+                    'place_id' => $placeId,
                 ]);
             } elseif (array_key_exists('name',$tag)) {
-               $tagExists =Tag::where('name',$tag['name']) -> first();
+                $tagExists = Tag::firstOrCreate('name', $tag['name']);
                 if($tagExists) {
                     PlaceTag::create([
                         'tag_id' => $tagExists->id,
-                        'place_id' => $placeid,
-                    ]);
-                }else{
-                    $newTag = Tag::create([
-                        'name' => $tag['name'],
-                    ]);
-                    PlaceTag::create([
-                        'tag_id' => $newTag->id,
-                        'place_id' => $placeid,
+                        'place_id' => $placeId,
                     ]);
                 }
             }
@@ -158,12 +158,64 @@ class Place extends Model
 
             $admins = User::whereIn('role', [2, 3])->pluck('id')->toArray();
             $adminsTokens = FcmToken::whereIn('user_id', $admins)->pluck('token')->toArray();
-            $notification = Notification::create(['title' => "A new post has come", 'body' => "Verify then approve or reject", 'description' => '']);
+            $notification = Notification::create(['title' => "A new post has come", 'body' => "Check then approve or reject", 'description' => '', 'type' => 1,
+                'place_id' => $placeId
+            ]);
             foreach ($admins as $admin) {
                 NotificationItem::create(['user_id' => $admin, 'notification_id' => $notification->id]);
             }
-            FcmToken::send($adminsTokens, $notification->title, $notification->body);
+            try {
+                FcmToken::send($adminsTokens, $notification);
+            } catch (\Exception $e) {
+                return "fcm_error";
+            }
         }
 
+    }
+
+    public static function available(Place $place)
+    {
+        return !($place->status == 'approved' || $place->status == 'refused');
+    }
+
+    public static function approve(Place $place)
+    {
+        $place->status = 2;
+        $place->save();
+        $adminsTokens = FcmToken::where('user_id', $place->user_id)->pluck('token')->toArray();
+        $notification = Notification::create(['title' => "Your post has been approved", 'body' => "You can see your post now", 'description' => '',
+            'type' => 2,
+            'place_id' => $place->id
+        ]);
+        NotificationItem::create(['user_id' => $place->user_id, 'notification_id' => $notification->id]);
+        try {
+            FcmToken::send($adminsTokens, $notification);
+        } catch (\Exception $e) {
+            return $e;
+        }
+    }
+
+    public static function refuse(Place $place, $description, $messages)
+    {
+        $place->status = 3;
+        $place->save();
+        $adminsTokens = FcmToken::where('user_id', $place->user_id)->pluck('token')->toArray();
+        $notification = Notification::create(['title' => "Your post has been refused", 'body' => "See what's going wrong", 'description' => $description,
+            'type' => 3,
+            'place_id' => $place->id
+        ]);
+        NotificationItem::create(['user_id' => $place->user_id, 'notification_id' => $notification->id]);
+        foreach ($messages as $message) {
+            NotificationRefuseMessageItem::create([
+                'notification_id' => $notification->id,
+                'message_id' => $message
+            ]);
+        }
+
+        try {
+            FcmToken::send($adminsTokens, $notification);
+        } catch (\Exception $e) {
+            return $e;
+        }
     }
 }
