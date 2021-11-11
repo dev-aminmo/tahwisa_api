@@ -49,7 +49,7 @@ class AdminController extends Controller
             $message = ($e) ? ['place refused successfully', $e] : 'place refused successfully';
             return $this->returnSuccessResponse($message);
         } catch (\Exception $e) {
-            return $this->returnErrorResponse('An error has occurred');
+            return $this->returnErrorResponse($e->getMessage());
         }
     }
 

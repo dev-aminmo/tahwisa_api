@@ -42,7 +42,6 @@ class FcmToken extends Model
         $option = $optionBuilder->build();
         $notification = $notificationBuilder->build();
         $data = $dataBuilder->build();
-        $tokens = (count($tokens) > 1) ? $tokens : [$tokens];
         $downstreamResponse = FCM::sendTo($tokens, $option, $notification, $data);
         /*   forEach($downstreamResponse->tokensToDelete() as  $token){
                DB::transaction(function () use ($token) {
@@ -50,6 +49,8 @@ class FcmToken extends Model
                    return 'success';
                });
            }*/
+        dd($downstreamResponse);
         return $downstreamResponse;
+
     }
 }

@@ -17,7 +17,7 @@ class CreateNotificationsTable extends Migration
             $table->id();
             $table->string("title");
             $table->string("body");
-            $table->string("description");
+            $table->string("description")->nullable();
             $table->bigInteger('type')->unsigned();
             $table->foreign("type")->references('id')->on("notification_types");
             $table->bigInteger('place_id')->unsigned();

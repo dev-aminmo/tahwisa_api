@@ -83,7 +83,7 @@ Route::middleware('auth:api')->group(function () {
     // --------------------- END FCM Tokens ROUTES ---------------------
     // --------------------- Notifications ROUTES ---------------------
     Route::get("notifications/index", [NotificationController::class, "index"]);
-    Route::get("notifications/read/{id}", [NotificationController::class, "read"]);
+    Route::put("notifications/read/{id}", [NotificationController::class, "read"]);
     Route::get("notifications/refused/messages/{notification}", [NotificationController::class, "getRefusePlaceMessages"]);
 
     // --------------------- END Notifications ROUTES ---------------------
