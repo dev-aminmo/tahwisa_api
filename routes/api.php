@@ -56,7 +56,7 @@ Route::middleware('auth:api')->group(function () {
     Route::group(['prefix' => '/places'], function () {
         Route::get("all", [PlaceController::class, "all"]);
         Route::post("add", [PlaceController::class, "addPlace"]);
-        Route::put("updateinfo/{id}", [PlaceController::class, "updatePlaceInfo"]);
+        Route::post("edit/{place}", [PlaceController::class, "updatePlace"]);
         Route::get("search", [PlaceController::class, "search"]);
         Route::get("autocomplete", [PlaceController::class, "autocomplete"]);
         Route::get("{place}", [PlaceController::class, "index"]);

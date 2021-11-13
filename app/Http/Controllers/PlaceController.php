@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\MyResponse;
+use App\Models\PlacePicture;
 use App\Models\Tag;
 use Exception;
 use Illuminate\Http\Request;
 use App\Models\Place;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Route;
 
@@ -74,24 +76,43 @@ class PlaceController extends Controller
             return $this->returnErrorResponse($exception->getMessage());
         }
     }
-    public function updatePlaceInfo(Request $request)
+
+    public function updatePlace(Request $request, Place $place)
     {
-        $id = Route::current()->parameter('id');
-        $validation = Validator::make($request->all(), [
-            'title'  => 'string',
-            'description' => 'string',
-            'latitude' => 'numeric',
-            'longitude' => 'numeric',
-            //'pictures'=>'array'
+
+
+        $validation = Validator::make(
+            $request->all(),
+            [
+                'data' => 'required',
+                // 'file' => 'required',
+                'file.*' => 'mimes:jpg,jpeg,png,bmp|max:20000',
+            ],
+            [
+                'file.*.mimes' => 'Only jpeg,png and bmp images are allowed',
+                'file.*.max' => 'Sorry! Maximum allowed size for an image is 20MB',
+            ]
+        );
+        if ($validation->fails()) {
+            return response()->json($validation->errors(), 422);
+        }
+        $jsonData = $request->get("data");
+        if (!is_array($jsonData)) $jsonData = json_decode($request->get("data"), true);
+        $validation = Validator::make($jsonData, [
+            'title' => 'required|string|max:191',
+            'description' => 'nullable|string|max:2000',
+            'municipal_id' => 'exists:municipales,id'
+
         ]);
         if ($validation->fails()) {
-            return response()->json($validation->errors(), 202);
+            return $this->returnValidationResponse($validation->errors());
         }
-        $allData = $request->all();
+
         try {
-            Place::where('id', $id)->update($allData);
-            $data = ['message' => 'place updated successfully', 'data' => $allData, 'response code' => 201];
-            return Response()->json($data, 201);
+            $files = $request->file('file');
+            $e = Place::updatePlace($place, $jsonData, $files);
+            $message = ($e) ? ['place updated successfully', $e] : 'place updated successfully';
+            return $this->returnSuccessResponse($message);
         } catch (Exception $exception) {
             $response = [];
             echo $exception;

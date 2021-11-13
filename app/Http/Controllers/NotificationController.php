@@ -19,7 +19,6 @@ class NotificationController extends Controller
     function index(Request $request)
     {
         $userId = auth()->user()->id;
-        $userId = 1;
         $data = NotificationItem::where('user_id', $userId)->orderBy('created_at', 'DESC')
             ->whereDate('created_at', '>', \Carbon\Carbon::now()->subMonth())
             ->with('notification')->limit(50)->get();
@@ -30,12 +29,12 @@ class NotificationController extends Controller
     function read(Request $request, $id)
     {
         try {
-            $userId = 1;
+            $userId = auth()->user()->id;
             $notification = NotificationItem::where(['user_id' => $userId, 'notification_id' => $id])->firstOrFail();
             $notification->update(['read' => true]);
             return $this->returnSuccessResponse("notification updated successfully");
         } catch (\Exception $e) {
-            return $this->returnErrorResponse();
+            return $this->returnErrorResponse($e->getMessage());
         }
     }
 

@@ -49,7 +49,6 @@ class FcmToken extends Model
                    return 'success';
                });
            }*/
-        dd($downstreamResponse);
         return $downstreamResponse;
 
     }

@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
+use App\Models\PlacePicture;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
-use App\Models\PlacePicture;
 use Nyholm\Psr7\Request;
 
 class Place extends Model
@@ -27,14 +27,17 @@ class Place extends Model
         'municipal_id',
         'status'
     ];
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
     public function municipal()
     {
         return $this->belongsTo(Municipal::class, 'municipal_id');
     }
+
     public function pictures()
     {
         return $this->hasMany(PlacePicture::class, 'place_id');
@@ -46,14 +49,17 @@ class Place extends Model
             $query->select("id", "name_fr");
         }])->first();
     }
+
     public function getLatitudeAttribute($value)
     {
         return (float) $value;
     }
+
     public function getLongitudeAttribute($value)
     {
         return (float) $value;
     }
+
     public function getModelAttribute()
     {
 
@@ -160,6 +166,57 @@ class Place extends Model
             $adminsTokens = FcmToken::whereIn('user_id', $admins)->pluck('token')->toArray();
             $notification = Notification::create(['title' => "A new post has come", 'body' => "Check then approve or reject", 'description' => '', 'type' => 1,
                 'place_id' => $placeId
+            ]);
+            foreach ($admins as $admin) {
+                NotificationItem::create(['user_id' => $admin, 'notification_id' => $notification->id]);
+            }
+            try {
+                FcmToken::send($adminsTokens, $notification);
+            } catch (\Exception $e) {
+                return "fcm_error";
+            }
+        }
+
+    }
+
+    public static function updatePlace($place, $jsonData, $files)
+
+    {
+        set_time_limit(500);
+        if ($files == null ? false : count($files) > 0) {
+            set_time_limit(500);
+            $pictures = [];
+            $cloudinary = cloudinary();
+            foreach ($files as $file) {
+                $pictures[] = $cloudinary->upload($file->getRealPath(), [
+                    'folder' => 'tahwisa/places/v2/',
+                    'quality' => "auto",
+                    'fetch_format' => "auto"
+                ])->getSecurePath();
+            }
+            PlacePicture::where('place_id', $place->id)->delete();
+
+            foreach ($pictures as $k => $picture) {
+                $arg = [];
+                $arg['path'] = $picture;
+                DB::table('places_pictures')->insert([
+                    'path' => $arg['path'], 'place_id' => $place->id
+                ]);
+            }
+        }
+
+        $place->update(array_filter($jsonData));
+        $place->status = 1;
+        $place->save();
+
+        $user = auth()->user();
+
+        if ($user->role == 1) {
+
+            $admins = User::whereIn('role', [2, 3])->pluck('id')->toArray();
+            $adminsTokens = FcmToken::whereIn('user_id', $admins)->pluck('token')->toArray();
+            $notification = Notification::create(['title' => "A post has been updated", 'body' => "Check then approve or reject", 'description' => '', 'type' => 1,
+                'place_id' => $place->id
             ]);
             foreach ($admins as $admin) {
                 NotificationItem::create(['user_id' => $admin, 'notification_id' => $notification->id]);
