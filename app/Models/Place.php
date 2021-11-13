@@ -152,10 +152,18 @@ class Place extends Model
                     'place_id' => $placeId,
                 ]);
             } elseif (array_key_exists('name',$tag)) {
-                $tagExists = Tag::firstOrCreate('name', $tag['name']);
-                if($tagExists) {
+                $tagExists = Tag::where('name', $tag['name'])->first();
+                if ($tagExists) {
                     PlaceTag::create([
                         'tag_id' => $tagExists->id,
+                        'place_id' => $placeId,
+                    ]);
+                } else {
+                    $newTag = Tag::create([
+                        'name' => $tag['name'],
+                    ]);
+                    PlaceTag::create([
+                        'tag_id' => $newTag->id,
                         'place_id' => $placeId,
                     ]);
                 }
