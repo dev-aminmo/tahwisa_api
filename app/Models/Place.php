@@ -107,6 +107,10 @@ class Place extends Model
         );
     }
 
+    public function scopeApproved($query)
+    {
+        return $query->where('status', 2);
+    }
 
     public static function add($jsonData, $files)
 

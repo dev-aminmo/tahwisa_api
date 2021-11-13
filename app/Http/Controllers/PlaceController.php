@@ -122,7 +122,7 @@ class PlaceController extends Controller
     }
     public function all(Request $request)
     {
-        $places = Place::whereHas('pictures')->with(['pictures' => function ($query) {
+        $places = Place::approved()->whereHas('pictures')->with(['pictures' => function ($query) {
             $query->select(
                 'path',
                 'place_id'
@@ -134,29 +134,10 @@ class PlaceController extends Controller
         }])->paginate(10);
         return $this->returnDataResponse($places);
     }
-    public function get(Request $request)
-    {
-        $id = Route::current()->parameter('id');
-        try {
-            $place = Place::where('id', $id)->with(['pictures'])->withAvg('reviews', 'vote')->withCount('reviews')->with(['user' => function ($query) {
-                $query->select(
-                    'username',
-                    'profile_picture'
-                );
-            }])->get();
-            if (count($place) == 0) {
-                return response()->json(["error" => 401, "message" => "place doesn't exist"], 401);
-            }
-            return response()->json($place, 200);
-        } catch (Exception $exception) {
-            return response()->json(["error" => 401, "message" => "place doesn't exist"], 401);
-        }
-    }
-
     public function autocomplete(Request $request)
     {
         $keyword = $request->get('query');
-        $places = Place::whereHas('pictures')->where(function ($query) use ($keyword) {
+        $places = Place::approved()->whereHas('pictures')->where(function ($query) use ($keyword) {
             $query->where('title', 'ilike', '%' . $keyword . '%');
             //  ->orWhere('description', 'ilike', '%' . $keyword . '%');
         })->select(['id', 'title', 'description'])->with(['tags' => function ($query) {
@@ -173,13 +154,13 @@ class PlaceController extends Controller
         $keyword = $request->get('query');
         $query = null;
         if (request('tag')) {
-            $query =   Place::whereHas('pictures')->where(function ($query) {
+            $query = Place::approved()->whereHas('pictures')->where(function ($query) {
                 $query->whereHas('tags', function ($query) {
                     $query->where('tag_id', request('tag'));
                 });
             });
         } else {
-            $query =   Place::whereHas('pictures')->where(function ($query) use ($keyword) {
+            $query = Place::approved()->whereHas('pictures')->where(function ($query) use ($keyword) {
                 $query->where('title', 'like', '%' . $keyword . '%')
                     ->orWhere('description', 'like', '%' . $keyword . '%')
                     ->orWhereHas('tags', function ($query) use ($keyword) {
