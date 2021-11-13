@@ -138,7 +138,7 @@ class TagController extends Controller
     }
 
     public function top(Request $request){
-        $data= Tag::query()->take(10)->get();
+        $data = Tag::where('top', 1)->get();
         return $this->returnDataResponse($data);
 
     }

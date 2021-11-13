@@ -57,17 +57,17 @@ class WishController extends Controller
 
         try{
         $userId=auth()->user()->id;
-       $data= Place::whereHas('wishes',function($query)use($userId){
-            $query->where('user_id',$userId);
-        })->whereHas('pictures')->with(['pictures'=> function ($query){
+       $data = Place::approved()->whereHas('wishes', function ($query) use ($userId) {
+           $query->where('user_id', $userId);
+       })->whereHas('pictures')->with(['pictures' => function ($query) {
            $query->select(//
                'path',
                'place_id'
            );
-       }])->with(['tags'=>function($query){
-           $query->select(['tag_id','name']);
-       }])->withAvg('reviews','vote')->withCount('reviews')->with(['user'=>function($query){
-           $query->select(['id','username','profile_picture']);
+       }])->with(['tags' => function ($query) {
+           $query->select(['tag_id', 'name']);
+       }])->withAvg('reviews', 'vote')->withCount('reviews')->with(['user' => function ($query) {
+           $query->select(['id', 'username', 'profile_picture']);
        }])->paginate(10);
 
             return $this->returnDataResponse($data);
