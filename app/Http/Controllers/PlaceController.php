@@ -150,7 +150,6 @@ class PlaceController extends Controller
     }
     public function search(Request $request)
     {
-        //TODO handle error change to ilike
         $keyword = $request->get('query');
         $query = null;
         if (request('tag')) {
@@ -161,10 +160,10 @@ class PlaceController extends Controller
             });
         } else {
             $query = Place::approved()->whereHas('pictures')->where(function ($query) use ($keyword) {
-                $query->where('title', 'like', '%' . $keyword . '%')
-                    ->orWhere('description', 'like', '%' . $keyword . '%')
+                $query->where('title', 'ilike', '%' . $keyword . '%')
+                    ->orWhere('description', 'ilike', '%' . $keyword . '%')
                     ->orWhereHas('tags', function ($query) use ($keyword) {
-                        $query->where('name', 'like', '%' . $keyword . '%');
+                        $query->where('name', 'ilike', '%' . $keyword . '%');
                     });
             });
         }
